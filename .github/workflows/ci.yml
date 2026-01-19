@@ -44,7 +44,7 @@ jobs:
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
           
       - name: Check
-        run: cargo check --workspace --exclude rururu-file-handler --exclude rururu-wrappers --exclude rururu-files
+        run: cargo check --workspace --exclude rururu-file-handler --exclude rururu-wrappers --exclude rururu-files --exclude rururu-desktop
 
   fmt:
     name: Format
@@ -79,7 +79,7 @@ jobs:
             pkg-config
             
       - name: Clippy
-        run: cargo clippy --workspace --exclude rururu-file-handler --exclude rururu-wrappers --exclude rururu-files -- -D warnings
+        run: cargo clippy --workspace --exclude rururu-file-handler --exclude rururu-wrappers --exclude rururu-files --exclude rururu-desktop -- -D warnings
 
   test:
     name: Test
@@ -102,7 +102,7 @@ jobs:
             pkg-config
             
       - name: Run tests
-        run: cargo test --workspace --exclude rururu-file-handler --exclude rururu-wrappers --exclude rururu-files
+        run: cargo test --workspace --exclude rururu-file-handler --exclude rururu-wrappers --exclude rururu-files --exclude rururu-desktop
 
   build:
     name: Build
@@ -131,7 +131,7 @@ jobs:
             pkg-config
             
       - name: Build
-        run: cargo build --release --workspace --exclude rururu-file-handler --exclude rururu-wrappers --exclude rururu-files --target ${{ matrix.target }}
+        run: cargo build --release --workspace --exclude rururu-file-handler --exclude rururu-wrappers --exclude rururu-files --exclude rururu-desktop --target ${{ matrix.target }}
         
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
@@ -158,7 +158,7 @@ jobs:
         run: cargo install cross --git https://github.com/cross-rs/cross
         
       - name: Build ARM64
-        run: cross build --release --workspace --exclude rururu-file-handler --exclude rururu-wrappers --exclude rururu-files --target aarch64-unknown-linux-gnu
+        run: cross build --release --workspace --exclude rururu-file-handler --exclude rururu-wrappers --exclude rururu-files --exclude rururu-desktop --target aarch64-unknown-linux-gnu
         continue-on-error: true
         
       - name: Upload ARM64 artifacts
