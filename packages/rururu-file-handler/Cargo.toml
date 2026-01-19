@@ -7,7 +7,7 @@ license.workspace = true
 description = "Universal file format handler daemon for RururuOS"
 
 [features]
-default = ["ffmpeg", "image-processing"]
+default = ["image-processing"]
 ffmpeg = ["ffmpeg-next"]
 image-processing = ["image"]
 full = ["ffmpeg", "image-processing"]

@@ -7,11 +7,12 @@ license.workspace = true
 description = "Rust wrappers for multimedia libraries in RururuOS"
 
 [features]
-default = ["openexr", "assimp"]
+default = []
 openexr = ["dep:openexr"]
 assimp = ["dep:russimp"]
 draco = []
 ocio = []
+full = ["openexr", "assimp"]
 
 [dependencies]
 thiserror.workspace = true
