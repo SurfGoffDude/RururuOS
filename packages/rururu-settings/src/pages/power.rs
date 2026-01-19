@@ -1,5 +1,5 @@
 use crate::app::Message;
-use iced::widget::{column, pick_list, row, slider, text, toggler, Space};
+use iced::widget::{column, pick_list, row, text, Space};
 use iced::{Element, Length};
 
 pub struct PowerPage {
@@ -25,7 +25,7 @@ impl PowerPage {
         self.profile = profile.to_string();
     }
 
-    pub fn view(&self) -> Element<Message> {
+    pub fn view(&self) -> Element<'_, Message> {
         let profiles = vec![
             "Performance".to_string(),
             "Balanced".to_string(),

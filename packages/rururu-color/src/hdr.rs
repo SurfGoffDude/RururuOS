@@ -1,4 +1,6 @@
-use crate::monitor::{HdrCapability, MonitorProfile};
+#![allow(clippy::excessive_precision)]
+
+use crate::monitor::HdrCapability;
 use crate::{ColorError, Result};
 use serde::{Deserialize, Serialize};
 

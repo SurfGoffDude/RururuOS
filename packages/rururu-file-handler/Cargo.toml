@@ -36,7 +36,7 @@ image = { version = "0.25", optional = true }
 rawloader = "0.37"
 
 # Metadata extraction
-exif = "0.6"
+kamadak-exif = "0.6"
 id3 = "1"
 mp4parse = "0.17"
 

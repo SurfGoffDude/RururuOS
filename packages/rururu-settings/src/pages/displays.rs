@@ -31,7 +31,7 @@ impl DisplaysPage {
         self.scale = scale;
     }
 
-    pub fn view(&self) -> Element<Message> {
+    pub fn view(&self) -> Element<'_, Message> {
         let resolutions = vec![
             "3840x2160".to_string(),
             "2560x1440".to_string(),

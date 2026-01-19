@@ -40,7 +40,7 @@ impl StoragePage {
         // Would refresh disk info from system
     }
 
-    pub fn view(&self) -> Element<Message> {
+    pub fn view(&self) -> Element<'_, Message> {
         let disk_items: Vec<Element<Message>> = self
             .disks
             .iter()

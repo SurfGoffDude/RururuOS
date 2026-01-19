@@ -1,7 +1,7 @@
 use iced::widget::{button, column, container, progress_bar, row, scrollable, text, Space};
 use iced::{Application, Command, Element, Length, Settings, Subscription, Theme};
 use std::time::Duration;
-use sysinfo::{Pid, ProcessStatus, System};
+use sysinfo::{Pid, System};
 
 fn main() -> iced::Result {
     MonitorApp::run(Settings {
@@ -151,7 +151,7 @@ impl Application for MonitorApp {
         Command::none()
     }
 
-    fn view(&self) -> Element<Message> {
+    fn view(&self) -> Element<'_, Message> {
         let tabs = row![
             tab_button("Overview", Tab::Overview, self.current_tab),
             tab_button("Processes", Tab::Processes, self.current_tab),
@@ -222,7 +222,7 @@ impl MonitorApp {
         }
     }
 
-    fn view_overview(&self) -> Element<Message> {
+    fn view_overview(&self) -> Element<'_, Message> {
         let cpu_usage = self.system.global_cpu_usage();
         let mem_used = self.system.used_memory();
         let mem_total = self.system.total_memory();
@@ -294,7 +294,7 @@ impl MonitorApp {
         .into()
     }
 
-    fn view_processes(&self) -> Element<Message> {
+    fn view_processes(&self) -> Element<'_, Message> {
         let header = row![
             button(text("PID").size(12))
                 .style(iced::theme::Button::Text)
@@ -381,7 +381,7 @@ impl MonitorApp {
         .into()
     }
 
-    fn view_resources(&self) -> Element<Message> {
+    fn view_resources(&self) -> Element<'_, Message> {
         // CPU cores
         let cpus = self.system.cpus();
         let cpu_items: Vec<Element<Message>> = cpus
@@ -418,7 +418,7 @@ impl MonitorApp {
         .into()
     }
 
-    fn view_disks(&self) -> Element<Message> {
+    fn view_disks(&self) -> Element<'_, Message> {
         let disks = sysinfo::Disks::new_with_refreshed_list();
         let disk_items: Vec<Element<Message>> = disks
             .iter()
@@ -453,7 +453,7 @@ impl MonitorApp {
     }
 }
 
-fn tab_button(label: &str, tab: Tab, current: Tab) -> Element<Message> {
+fn tab_button(label: &str, tab: Tab, current: Tab) -> Element<'_, Message> {
     let style = if tab == current {
         iced::theme::Button::Primary
     } else {

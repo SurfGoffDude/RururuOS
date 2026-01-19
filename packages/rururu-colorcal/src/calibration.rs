@@ -23,19 +23,10 @@ impl CalibrationStep {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct CalibrationState {
     active: bool,
     current_step: usize,
-}
-
-impl Default for CalibrationState {
-    fn default() -> Self {
-        Self {
-            active: false,
-            current_step: 0,
-        }
-    }
 }
 
 impl CalibrationState {

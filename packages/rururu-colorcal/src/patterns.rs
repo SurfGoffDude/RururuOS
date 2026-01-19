@@ -1,6 +1,6 @@
 use crate::app::Message;
-use iced::widget::{canvas, column, container, row, text, Space};
-use iced::{Color, Element, Length, Point, Rectangle, Size};
+use iced::widget::{column, container, row, text, Space};
+use iced::{Color, Element, Length};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub enum TestPattern {

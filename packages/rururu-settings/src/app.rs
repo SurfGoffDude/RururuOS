@@ -6,6 +6,7 @@ use iced::widget::{button, column, container, row, scrollable, text, Space};
 use iced::{Application, Command, Element, Length, Theme};
 
 #[derive(Debug, Clone)]
+#[allow(dead_code)]
 pub enum Message {
     SelectPage(Page),
     // Appearance
@@ -172,7 +173,7 @@ impl Application for SettingsApp {
         Command::none()
     }
 
-    fn view(&self) -> Element<Message> {
+    fn view(&self) -> Element<'_, Message> {
         let sidebar = self.sidebar();
         let content = self.content();
 
@@ -185,7 +186,7 @@ impl Application for SettingsApp {
 }
 
 impl SettingsApp {
-    fn sidebar(&self) -> Element<Message> {
+    fn sidebar(&self) -> Element<'_, Message> {
         let items: Vec<Element<Message>> = Page::all()
             .iter()
             .map(|page| {
@@ -226,7 +227,7 @@ impl SettingsApp {
         .into()
     }
 
-    fn content(&self) -> Element<Message> {
+    fn content(&self) -> Element<'_, Message> {
         let page_content: Element<Message> = match self.current_page {
             Page::Appearance => self.appearance.view(),
             Page::Displays => self.displays.view(),

@@ -19,7 +19,7 @@ tracing.workspace = true
 tracing-subscriber.workspace = true
 
 # GUI
-iced = { version = "0.13", features = ["tokio", "image", "svg"] }
+iced = { version = "0.12", features = ["tokio", "image", "svg"] }
 
 # System utilities
 rururu-utils = { path = "../rururu-utils" }

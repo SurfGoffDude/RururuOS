@@ -31,10 +31,14 @@ static PLUGIN_DESC: &[u8] = b"Example plugin demonstrating the RururuOS plugin A
 static EXT_EXAMPLE: &[u8] = b"example\0";
 static EXT_TEST: &[u8] = b"test\0";
 
-static EXTENSIONS: [*const c_char; 2] = [
+/// Thread-safe wrapper for extension pointers
+struct ExtensionsWrapper([*const c_char; 2]);
+unsafe impl Sync for ExtensionsWrapper {}
+
+static EXTENSIONS: ExtensionsWrapper = ExtensionsWrapper([
     EXT_EXAMPLE.as_ptr() as *const c_char,
     EXT_TEST.as_ptr() as *const c_char,
-];
+]);
 
 #[no_mangle]
 pub extern "C" fn rururu_plugin_info() -> PluginInfo {
@@ -42,8 +46,8 @@ pub extern "C" fn rururu_plugin_info() -> PluginInfo {
         name: PLUGIN_NAME.as_ptr() as *const c_char,
         version: PLUGIN_VERSION.as_ptr() as *const c_char,
         description: PLUGIN_DESC.as_ptr() as *const c_char,
-        supported_extensions: EXTENSIONS.as_ptr(),
-        extension_count: EXTENSIONS.len(),
+        supported_extensions: EXTENSIONS.0.as_ptr(),
+        extension_count: EXTENSIONS.0.len(),
     }
 }
 
@@ -59,17 +63,20 @@ pub extern "C" fn rururu_plugin_deinit() {
     // Cleanup plugin resources
 }
 
+/// Get metadata for a file.
+///
+/// # Safety
+/// - `path` must be a valid null-terminated C string pointer.
+/// - The returned pointer must be freed using `rururu_free_metadata`.
 #[no_mangle]
-pub extern "C" fn rururu_get_metadata(path: *const c_char) -> *mut FileMetadata {
+pub unsafe extern "C" fn rururu_get_metadata(path: *const c_char) -> *mut FileMetadata {
     if path.is_null() {
         return ptr::null_mut();
     }
 
-    let path_str = unsafe {
-        match CStr::from_ptr(path).to_str() {
-            Ok(s) => s,
-            Err(_) => return ptr::null_mut(),
-        }
+    let path_str = match CStr::from_ptr(path).to_str() {
+        Ok(s) => s,
+        Err(_) => return ptr::null_mut(),
     };
 
     // Example: extract metadata from file
@@ -89,22 +96,25 @@ pub extern "C" fn rururu_get_metadata(path: *const c_char) -> *mut FileMetadata 
     Box::into_raw(metadata)
 }
 
+/// Free metadata previously returned by `rururu_get_metadata`.
+///
+/// # Safety
+/// - `metadata` must be a pointer returned by `rururu_get_metadata`, or null.
+/// - Each pointer must only be freed once.
 #[no_mangle]
-pub extern "C" fn rururu_free_metadata(metadata: *mut FileMetadata) {
+pub unsafe extern "C" fn rururu_free_metadata(metadata: *mut FileMetadata) {
     if metadata.is_null() {
         return;
     }
 
-    unsafe {
-        let metadata = Box::from_raw(metadata);
+    let metadata = Box::from_raw(metadata);
 
-        // Free strings
-        if !metadata.mime_type.is_null() {
-            drop(CString::from_raw(metadata.mime_type as *mut c_char));
-        }
-        if !metadata.extra_json.is_null() {
-            drop(CString::from_raw(metadata.extra_json as *mut c_char));
-        }
+    // Free strings
+    if !metadata.mime_type.is_null() {
+        drop(CString::from_raw(metadata.mime_type as *mut c_char));
+    }
+    if !metadata.extra_json.is_null() {
+        drop(CString::from_raw(metadata.extra_json as *mut c_char));
     }
 }
 

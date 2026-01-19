@@ -2,7 +2,6 @@ use crate::hdr::HdrSupport;
 use crate::monitor::MonitorProfile;
 use crate::ocio::OcioManager;
 use crate::{ColorConfig, ColorError, IccManager, Result};
-use std::collections::HashMap;
 use std::sync::Arc;
 use tokio::sync::RwLock;
 use zbus::{interface, Connection};
@@ -13,6 +12,12 @@ pub struct ColorService {
     ocio_manager: Arc<RwLock<OcioManager>>,
     hdr_support: Arc<RwLock<HdrSupport>>,
     monitors: Arc<RwLock<Vec<MonitorProfile>>>,
+}
+
+impl Default for ColorService {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl ColorService {

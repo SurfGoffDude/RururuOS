@@ -1,6 +1,8 @@
+#![allow(clippy::type_complexity)]
+
 use std::collections::HashMap;
 use thiserror::Error;
-use tracing::{debug, info, warn};
+use tracing::{debug, info};
 use zbus::{blocking::Connection, proxy};
 
 #[derive(Error, Debug)]
@@ -212,7 +214,7 @@ impl SystemdManager {
 }
 
 pub fn create_service_unit(
-    name: &str,
+    _name: &str,
     description: &str,
     exec_start: &str,
     options: HashMap<String, String>,

@@ -1,5 +1,5 @@
 use crate::profiles::{CpuGovernor, IoScheduler, SwapUsage, SystemSettings};
-use crate::{Result, WorkflowError};
+use crate::Result;
 use std::fs;
 use std::path::Path;
 
@@ -68,7 +68,7 @@ pub fn set_swap_usage(usage: SwapUsage) -> Result<()> {
 pub fn set_io_scheduler(scheduler: IoScheduler, device: &str) -> Result<()> {
     let scheduler_str = match scheduler {
         IoScheduler::Bfq => "bfq",
-        IoScheduler::Mq_Deadline => "mq-deadline",
+        IoScheduler::MqDeadline => "mq-deadline",
         IoScheduler::Kyber => "kyber",
         IoScheduler::None => "none",
     };

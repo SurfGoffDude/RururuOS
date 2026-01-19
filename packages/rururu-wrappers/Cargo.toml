@@ -18,7 +18,7 @@ thiserror.workspace = true
 tracing.workspace = true
 
 # OpenEXR for HDR images
-openexr = { version = "1.0", optional = true }
+openexr = { version = "0.11", optional = true }
 
 # Assimp for 3D model loading
 russimp = { version = "2", optional = true }

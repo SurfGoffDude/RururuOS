@@ -66,13 +66,17 @@ impl IccManager {
     pub fn scan_profiles(&mut self) {
         self.profiles.clear();
 
-        // Scan system paths
-        for path in &self.system_paths {
-            self.scan_directory(path);
-        }
+        // Collect paths first to avoid borrow conflict
+        let paths_to_scan: Vec<PathBuf> = self
+            .system_paths
+            .iter()
+            .cloned()
+            .chain(std::iter::once(self.user_path.clone()))
+            .collect();
 
-        // Scan user path
-        self.scan_directory(&self.user_path.clone());
+        for path in paths_to_scan {
+            self.scan_directory(&path);
+        }
     }
 
     fn scan_directory(&mut self, dir: &Path) {
@@ -212,7 +216,7 @@ impl Default for IccManager {
     }
 }
 
-pub fn apply_profile_to_monitor(profile: &IccProfile, monitor_name: &str) -> Result<()> {
+pub fn apply_profile_to_monitor(_profile: &IccProfile, _monitor_name: &str) -> Result<()> {
     // Use colord or direct gamma ramp setting
     #[cfg(target_os = "linux")]
     {

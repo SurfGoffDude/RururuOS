@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+
 use crate::{ColorError, Result};
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;

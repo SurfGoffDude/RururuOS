@@ -93,9 +93,9 @@ impl OcioManager {
         // Real implementation would use ocio-rs or similar
 
         let mut color_spaces = Vec::new();
-        let mut displays = Vec::new();
-        let mut views = Vec::new();
-        let mut looks = Vec::new();
+        let displays = Vec::new();
+        let views = Vec::new();
+        let looks = Vec::new();
         let mut roles = OcioRoles::default();
         let mut description = String::new();
 

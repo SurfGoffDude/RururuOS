@@ -47,6 +47,7 @@ pub enum Tab {
     Settings,
 }
 
+#[allow(dead_code)]
 impl Tab {
     pub fn title(&self) -> &'static str {
         match self {
@@ -195,7 +196,7 @@ impl Application for ColorCalApp {
         Command::none()
     }
 
-    fn view(&self) -> Element<Message> {
+    fn view(&self) -> Element<'_, Message> {
         let tabs = row![
             tab_button("Calibrate", Tab::Calibrate, self.current_tab),
             tab_button("Profiles", Tab::Profiles, self.current_tab),
@@ -223,7 +224,7 @@ impl Application for ColorCalApp {
 }
 
 impl ColorCalApp {
-    fn view_calibrate(&self) -> Element<Message> {
+    fn view_calibrate(&self) -> Element<'_, Message> {
         // Display selector
         let display_names: Vec<String> = self.displays.iter().map(|d| d.name.clone()).collect();
 
@@ -349,7 +350,7 @@ impl ColorCalApp {
         .into()
     }
 
-    fn view_calibration_step(&self) -> Element<Message> {
+    fn view_calibration_step(&self) -> Element<'_, Message> {
         let step = self.calibration.current_step();
         let step_num = self.calibration.step_number();
         let total_steps = self.calibration.total_steps();
@@ -460,7 +461,7 @@ impl ColorCalApp {
         .into()
     }
 
-    fn view_profiles(&self) -> Element<Message> {
+    fn view_profiles(&self) -> Element<'_, Message> {
         let profile_list: Vec<Element<Message>> = self
             .profiles
             .iter()
@@ -518,8 +519,8 @@ impl ColorCalApp {
         .into()
     }
 
-    fn view_test_patterns(&self) -> Element<Message> {
-        let patterns = vec![
+    fn view_test_patterns(&self) -> Element<'_, Message> {
+        let patterns = [
             TestPattern::ColorBars,
             TestPattern::Gradient,
             TestPattern::BlackLevel,
@@ -540,7 +541,7 @@ impl ColorCalApp {
                     } else {
                         iced::theme::Button::Secondary
                     })
-                    .on_press(Message::SelectPattern(pattern.clone()))
+                    .on_press(Message::SelectPattern(*pattern))
                     .into()
             })
             .collect();
@@ -562,7 +563,7 @@ impl ColorCalApp {
         .into()
     }
 
-    fn view_settings(&self) -> Element<Message> {
+    fn view_settings(&self) -> Element<'_, Message> {
         column![
             text("Calibration Settings").size(18),
             Space::with_height(Length::Fixed(16.0)),
@@ -600,7 +601,7 @@ impl ColorCalApp {
     }
 }
 
-fn tab_button(label: &str, tab: Tab, current: Tab) -> Element<Message> {
+fn tab_button(label: &str, tab: Tab, current: Tab) -> Element<'_, Message> {
     let style = if tab == current {
         iced::theme::Button::Primary
     } else {

@@ -21,18 +21,13 @@ pub struct GlobalColorSettings {
     pub soft_proofing: bool,
 }
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, Default)]
 pub enum RenderingIntent {
+    #[default]
     Perceptual,
     RelativeColorimetric,
     Saturation,
     AbsoluteColorimetric,
-}
-
-impl Default for RenderingIntent {
-    fn default() -> Self {
-        Self::Perceptual
-    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

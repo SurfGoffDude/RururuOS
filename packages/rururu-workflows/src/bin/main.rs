@@ -1,6 +1,4 @@
-use rururu_workflows::apps::{
-    install_app, is_app_installed, launch_app, list_installed_creative_apps,
-};
+use rururu_workflows::apps::{install_app, is_app_installed, list_installed_creative_apps};
 use rururu_workflows::system::{apply_system_settings, get_system_info};
 use rururu_workflows::{WorkflowConfig, WorkflowProfile, WorkflowType};
 use std::env;

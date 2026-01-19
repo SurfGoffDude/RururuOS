@@ -22,7 +22,7 @@ impl NetworkPage {
         }
     }
 
-    pub fn view(&self) -> Element<Message> {
+    pub fn view(&self) -> Element<'_, Message> {
         let network_items: Vec<Element<Message>> =
             self.available_networks
                 .iter()
@@ -42,12 +42,10 @@ impl NetworkPage {
                             text(name).size(14),
                             text(if is_connected {
                                 "Connected"
+                            } else if *secured {
+                                "Secured"
                             } else {
-                                if *secured {
-                                    "Secured"
-                                } else {
-                                    "Open"
-                                }
+                                "Open"
                             })
                             .size(11)
                             .style(iced::theme::Text::Color(if is_connected {

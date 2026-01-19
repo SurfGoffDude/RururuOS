@@ -1,7 +1,8 @@
 use crate::app::Message;
-use iced::widget::{column, pick_list, row, slider, text, toggler, Space};
+use iced::widget::{column, pick_list, row, slider, text, Space};
 use iced::{Element, Length};
 
+#[allow(dead_code)]
 pub struct AudioPage {
     pub output_volume: f32,
     pub input_volume: f32,
@@ -31,7 +32,7 @@ impl AudioPage {
         self.input_volume = vol;
     }
 
-    pub fn view(&self) -> Element<Message> {
+    pub fn view(&self) -> Element<'_, Message> {
         let output_devices = vec![
             "Built-in Audio".to_string(),
             "HDMI Audio".to_string(),

@@ -25,7 +25,7 @@ impl AboutPage {
         }
     }
 
-    pub fn view(&self) -> Element<Message> {
+    pub fn view(&self) -> Element<'_, Message> {
         column![
             // Logo and name
             row![

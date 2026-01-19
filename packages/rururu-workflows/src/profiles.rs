@@ -111,7 +111,7 @@ pub enum SwapUsage {
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
 pub enum IoScheduler {
     Bfq,
-    Mq_Deadline,
+    MqDeadline,
     Kyber,
     None,
 }
@@ -227,7 +227,7 @@ impl WorkflowProfile {
                 cpu_governor: CpuGovernor::Performance,
                 gpu_performance_mode: true,
                 swap_usage: SwapUsage::Minimal,
-                io_scheduler: IoScheduler::Mq_Deadline,
+                io_scheduler: IoScheduler::MqDeadline,
                 realtime_audio: false,
                 high_priority_processes: vec!["blender".to_string()],
                 memory_pressure_threshold: 95,
@@ -356,7 +356,7 @@ impl WorkflowProfile {
                 cpu_governor: CpuGovernor::Performance,
                 gpu_performance_mode: false,
                 swap_usage: SwapUsage::Minimal,
-                io_scheduler: IoScheduler::Mq_Deadline,
+                io_scheduler: IoScheduler::MqDeadline,
                 realtime_audio: true,
                 high_priority_processes: vec![
                     "ardour".to_string(),

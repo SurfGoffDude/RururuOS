@@ -1,7 +1,8 @@
 use crate::app::Message;
-use iced::widget::{button, column, container, pick_list, row, text, toggler, Space};
+use iced::widget::{button, column, container, pick_list, row, text, Space};
 use iced::{Element, Length};
 
+#[allow(dead_code)]
 pub struct AppearancePage {
     pub theme: String,
     pub accent_color: [u8; 3],
@@ -37,7 +38,7 @@ impl AppearancePage {
         self.icon_theme = theme.to_string();
     }
 
-    pub fn view(&self) -> Element<Message> {
+    pub fn view(&self) -> Element<'_, Message> {
         let themes = vec![
             "Tokyo Night".to_string(),
             "Dracula".to_string(),
@@ -75,8 +76,8 @@ impl AppearancePage {
 
         let color_buttons: Vec<Element<Message>> = accent_colors
             .iter()
-            .map(|(name, color)| {
-                let is_selected = self.accent_color == *color;
+            .map(|(_name, color)| {
+                let _is_selected = self.accent_color == *color;
                 let color_clone = *color;
 
                 button(

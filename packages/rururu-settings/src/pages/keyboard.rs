@@ -2,6 +2,7 @@ use crate::app::Message;
 use iced::widget::{button, column, row, text, Space};
 use iced::{Element, Length};
 
+#[allow(dead_code)]
 pub struct KeyboardPage {
     pub layouts: Vec<String>,
     pub current_layout: String,
@@ -48,7 +49,7 @@ impl KeyboardPage {
         }
     }
 
-    pub fn view(&self) -> Element<Message> {
+    pub fn view(&self) -> Element<'_, Message> {
         let layout_items: Vec<Element<Message>> = self
             .layouts
             .iter()
