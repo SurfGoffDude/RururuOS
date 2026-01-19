@@ -30,6 +30,7 @@ jobs:
             libinput-dev \
             libdbus-1-dev \
             liblcms2-dev \
+            libfontconfig1-dev \
             pkg-config
             
       - name: Cache cargo
@@ -76,6 +77,7 @@ jobs:
             libinput-dev \
             libdbus-1-dev \
             liblcms2-dev \
+            libfontconfig1-dev \
             pkg-config
             
       - name: Clippy
@@ -99,6 +101,7 @@ jobs:
             libinput-dev \
             libdbus-1-dev \
             liblcms2-dev \
+            libfontconfig1-dev \
             pkg-config
             
       - name: Run tests
@@ -128,6 +131,7 @@ jobs:
             libinput-dev \
             libdbus-1-dev \
             liblcms2-dev \
+            libfontconfig1-dev \
             pkg-config
             
       - name: Build
