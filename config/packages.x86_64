@@ -1,0 +1,119 @@
+# RururuOS Additional Packages
+# Appended to archiso releng profile
+
+# ===================
+# Multimedia Codecs
+# ===================
+
+# FFmpeg and GStreamer
+ffmpeg
+gstreamer
+gst-plugins-base
+gst-plugins-good
+gst-plugins-bad
+gst-plugins-ugly
+gst-libav
+
+# Audio codecs
+flac
+opus
+libvorbis
+lame
+libfdk-aac
+libopus
+
+# Video codecs
+x264
+x265
+aom
+svt-av1
+libvpx
+dav1d
+
+# ===================
+# Audio System
+# ===================
+pipewire
+pipewire-pulse
+pipewire-jack
+pipewire-alsa
+wireplumber
+rtkit
+
+# ===================
+# Graphics & Image
+# ===================
+libjpeg-turbo
+libpng
+libwebp
+libavif
+libheif
+libtiff
+openexr
+libraw
+libjxl
+
+# Color management
+opencolorio
+argyllcms
+
+# ===================
+# 3D & CAD
+# ===================
+assimp
+openscenegraph
+
+# ===================
+# Creative Applications
+# ===================
+blender
+krita
+gimp
+inkscape
+darktable
+rawtherapee
+kdenlive
+audacity
+ardour
+
+# ===================
+# Documents
+# ===================
+poppler
+pandoc
+libreoffice-fresh
+
+# ===================
+# Development
+# ===================
+rust
+base-devel
+git
+cmake
+meson
+ninja
+clang
+llvm
+
+# ===================
+# Desktop
+# ===================
+wayland
+xorg-xwayland
+mesa
+vulkan-icd-loader
+nvidia-utils
+
+# Fonts
+ttf-dejavu
+ttf-liberation
+noto-fonts
+noto-fonts-cjk
+noto-fonts-emoji
+
+# ===================
+# System
+# ===================
+networkmanager
+bluez
+cups

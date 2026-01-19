@@ -1,0 +1,58 @@
+[package]
+name = "rururu-file-handler"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "Universal file format handler daemon for RururuOS"
+
+[features]
+default = ["ffmpeg", "image-processing"]
+ffmpeg = ["ffmpeg-next"]
+image-processing = ["image"]
+full = ["ffmpeg", "image-processing"]
+
+[dependencies]
+tokio.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true
+
+# File format detection
+infer = "0.16"
+
+# D-Bus for IPC
+zbus = "4"
+
+# FFmpeg bindings
+ffmpeg-next = { version = "7", optional = true }
+
+# Image processing
+image = { version = "0.25", optional = true }
+
+# RAW photo support
+rawloader = "0.37"
+
+# Metadata extraction
+exif = "0.6"
+id3 = "1"
+mp4parse = "0.17"
+
+# Plugin system
+libloading = "0.8"
+
+# Caching
+sled = "0.34"
+
+# Path handling
+walkdir = "2"
+glob = "0.3"
+
+# Async utilities
+futures = "0.3"
+async-trait = "0.1"
+
+[dev-dependencies]
+tempfile = "3"

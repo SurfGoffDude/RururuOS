@@ -1,0 +1,21 @@
+{
+    "KPlugin": {
+        "Authors": [
+            {
+                "Email": "team@rururuos.org",
+                "Name": "RururuOS Team"
+            }
+        ],
+        "Category": "Utilities",
+        "Description": "Quick launcher for creative applications",
+        "Icon": "applications-graphics",
+        "Id": "org.rururu.creative",
+        "License": "MIT",
+        "Name": "Creative Launcher",
+        "Version": "0.1.0",
+        "Website": "https://github.com/rururuos"
+    },
+    "X-Plasma-API": "declarativeappletscript",
+    "X-Plasma-MainScript": "ui/main.qml",
+    "X-Plasma-Provides": ["org.kde.plasma.quicklaunch"]
+}

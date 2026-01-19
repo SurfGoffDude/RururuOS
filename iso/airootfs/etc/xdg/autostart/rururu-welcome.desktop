@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=RururuOS Welcome
+Exec=/usr/local/bin/rururu-welcome
+Icon=system-software-install
+Terminal=false
+Categories=System;
+StartupNotify=true
+X-GNOME-Autostart-enabled=true

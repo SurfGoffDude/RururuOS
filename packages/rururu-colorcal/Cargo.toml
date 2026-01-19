@@ -1,0 +1,27 @@
+[package]
+name = "rururu-colorcal"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "Color calibration tool for RururuOS"
+
+[[bin]]
+name = "rururu-colorcal"
+path = "src/main.rs"
+
+[dependencies]
+tokio.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+tracing.workspace = true
+
+# GUI
+iced = { version = "0.13", features = ["tokio", "image", "svg"] }
+
+# Color management
+lcms2 = "6"
+
+# System
+dirs = "5"

@@ -1,0 +1,66 @@
+[Colors:View]
+BackgroundNormal=26,27,38
+ForegroundNormal=192,202,245
+
+[Colors:Window]
+BackgroundNormal=26,27,38
+ForegroundNormal=192,202,245
+
+[Colors:Selection]
+BackgroundNormal=122,162,247
+ForegroundNormal=26,27,38
+
+[Colors:Button]
+BackgroundNormal=36,40,59
+ForegroundNormal=192,202,245
+
+[General]
+ColorScheme=TokyoNightDark
+Name=Tokyo Night Dark
+accentColorFromWallpaper=false
+fixed=JetBrains Mono,10,-1,5,400,0,0,0,0,0,0,0,0,0,0,1
+font=Inter,11,-1,5,400,0,0,0,0,0,0,0,0,0,0,1
+menuFont=Inter,10,-1,5,400,0,0,0,0,0,0,0,0,0,0,1
+smallestReadableFont=Inter,8,-1,5,400,0,0,0,0,0,0,0,0,0,0,1
+toolBarFont=Inter,10,-1,5,400,0,0,0,0,0,0,0,0,0,0,1
+
+[Icons]
+Theme=Papirus-Dark
+
+[KDE]
+AnimationDurationFactor=0.5
+LookAndFeelPackage=org.kde.breezedark.desktop
+SingleClick=false
+widgetStyle=Breeze
+
+[KFileDialog Settings]
+Allow Expansion=false
+Automatically select filename extension=true
+Breadcrumb Navigation=true
+Decoration position=2
+LocationCombo Completionmode=5
+PathCombo Completionmode=5
+Show Bookmarks=false
+Show Full Path=false
+Show Inline Previews=true
+Show Preview=false
+Show Speedbar=true
+Show hidden files=false
+Sort by=Name
+Sort directories first=true
+Sort hidden files last=false
+Sort reversed=false
+Speedbar Width=140
+View Style=DetailTree
+
+[PreviewSettings]
+MaximumRemoteSize=10485760
+MaximumSize=104857600
+
+[WM]
+activeBackground=36,40,59
+activeBlend=192,202,245
+activeForeground=192,202,245
+inactiveBackground=26,27,38
+inactiveBlend=169,177,214
+inactiveForeground=169,177,214

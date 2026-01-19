@@ -1,0 +1,120 @@
+name: Nightly ISO Build
+
+on:
+  schedule:
+    - cron: '0 2 * * *'  # Every day at 2 AM UTC
+  workflow_dispatch:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build-iso:
+    name: Build Nightly ISO
+    runs-on: ubuntu-latest
+    container:
+      image: archlinux:latest
+      options: --privileged
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install dependencies
+        run: |
+          pacman -Syu --noconfirm
+          pacman -S --noconfirm \
+            archiso \
+            git \
+            rust \
+            cargo \
+            base-devel \
+            squashfs-tools \
+            dosfstools \
+            mtools
+            
+      - name: Build packages
+        run: cargo build --release --workspace
+        continue-on-error: true
+        
+      - name: Build ISO
+        run: |
+          cd iso
+          chmod +x build.sh
+          ./build.sh full
+        continue-on-error: true
+        
+      - name: Upload ISO artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: rururu-nightly-iso
+          path: iso/out/*.iso
+          retention-days: 7
+
+  build-arm64-rpi:
+    name: Build ARM64 Raspberry Pi
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            qemu-user-static \
+            binfmt-support \
+            parted \
+            dosfstools \
+            bsdtar \
+            xz-utils
+            
+      - name: Build ARM64 packages
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-unknown-linux-gnu
+          
+      - name: Install cross
+        run: cargo install cross --git https://github.com/cross-rs/cross
+        
+      - name: Cross compile
+        run: cross build --release --workspace --target aarch64-unknown-linux-gnu
+        continue-on-error: true
+        
+      - name: Build RPi image
+        run: |
+          cd iso/arm64-rpi
+          chmod +x build.sh
+          sudo ./build.sh full
+        continue-on-error: true
+        
+      - name: Upload RPi image
+        uses: actions/upload-artifact@v4
+        with:
+          name: rururu-nightly-arm64-rpi
+          path: iso/arm64-rpi/out/*.img.xz
+          retention-days: 7
+
+  build-arm64-asahi:
+    name: Build ARM64 Asahi Overlay
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-unknown-linux-gnu
+          
+      - name: Install cross
+        run: cargo install cross --git https://github.com/cross-rs/cross
+        
+      - name: Build Asahi overlay
+        run: |
+          cd iso/arm64-asahi
+          chmod +x build.sh
+          ./build.sh full
+        continue-on-error: true
+        
+      - name: Upload Asahi overlay
+        uses: actions/upload-artifact@v4
+        with:
+          name: rururu-nightly-arm64-asahi
+          path: iso/arm64-asahi/out/*
+          retention-days: 7

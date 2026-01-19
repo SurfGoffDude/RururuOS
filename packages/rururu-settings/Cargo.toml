@@ -1,0 +1,37 @@
+[package]
+name = "rururu-settings"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "System settings application for RururuOS"
+
+[[bin]]
+name = "rururu-settings"
+path = "src/main.rs"
+
+[dependencies]
+tokio.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true
+
+# GUI
+iced = { version = "0.13", features = ["tokio", "image", "svg"] }
+
+# System utilities
+rururu-utils = { path = "../rururu-utils" }
+
+# D-Bus
+zbus = "4"
+
+# Config files
+toml = "0.8"
+dirs = "5"
+
+# Localization
+fluent = "0.16"
+fluent-bundle = "0.15"
+unic-langid = "0.9"

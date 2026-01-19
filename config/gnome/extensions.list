@@ -1,0 +1,27 @@
+# RururuOS GNOME Shell Extensions
+# Install with: for ext in $(cat extensions.list | grep -v '^#'); do gnome-extensions install "$ext"; done
+
+# Essential
+appindicatorsupport@rgcjonas.gmail.com
+dash-to-dock@micxgx.gmail.com
+user-theme@gnome-shell-extensions.gcampax.github.com
+
+# Tiling (Pop Shell alternative)
+pop-shell@system76.com
+
+# Productivity
+workspace-indicator@gnome-shell-extensions.gcampax.github.com
+gsconnect@andyholmes.github.io
+
+# System monitoring
+Vitals@CoreCoding.com
+
+# Creative workflow
+color-picker@tuberry
+
+# Clipboard
+clipboard-indicator@tudmotu.com
+
+# Window management
+space-bar@luchrioh
+tactile@lundal.io

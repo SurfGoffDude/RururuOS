@@ -1,0 +1,30 @@
+[package]
+name = "rururu-monitor"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "System monitor for RururuOS"
+
+[[bin]]
+name = "rururu-monitor"
+path = "src/main.rs"
+
+[dependencies]
+tokio.workspace = true
+serde.workspace = true
+thiserror.workspace = true
+tracing.workspace = true
+
+# GUI
+iced = { version = "0.13", features = ["tokio", "svg"] }
+
+# System info
+sysinfo = "0.31"
+
+# Charts
+plotters = "0.3"
+plotters-iced = "0.10"
+
+# Process management
+nix = { version = "0.29", features = ["signal", "process"] }

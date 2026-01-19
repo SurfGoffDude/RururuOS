@@ -1,0 +1,142 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  create-release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
+    steps:
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: RururuOS ${{ github.ref }}
+          draft: false
+          prerelease: false
+
+  build-x86_64:
+    name: Build x86_64
+    needs: create-release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: dtolnay/rust-toolchain@stable
+      
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libwayland-dev \
+            libxkbcommon-dev \
+            libudev-dev \
+            libinput-dev \
+            libdbus-1-dev \
+            pkg-config
+            
+      - name: Build
+        run: cargo build --release --workspace
+        
+      - name: Package
+        run: |
+          mkdir -p dist
+          cp target/release/rururu-* dist/ 2>/dev/null || true
+          tar -czvf rururu-x86_64-linux.tar.gz -C dist .
+          
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create-release.outputs.upload_url }}
+          asset_path: ./rururu-x86_64-linux.tar.gz
+          asset_name: rururu-x86_64-linux.tar.gz
+          asset_content_type: application/gzip
+
+  build-arm64:
+    name: Build ARM64
+    needs: create-release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-unknown-linux-gnu
+          
+      - name: Install cross
+        run: cargo install cross --git https://github.com/cross-rs/cross
+        
+      - name: Build
+        run: cross build --release --workspace --target aarch64-unknown-linux-gnu
+        continue-on-error: true
+        
+      - name: Package
+        run: |
+          mkdir -p dist
+          cp target/aarch64-unknown-linux-gnu/release/rururu-* dist/ 2>/dev/null || true
+          tar -czvf rururu-aarch64-linux.tar.gz -C dist .
+          
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        if: success()
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create-release.outputs.upload_url }}
+          asset_path: ./rururu-aarch64-linux.tar.gz
+          asset_name: rururu-aarch64-linux.tar.gz
+          asset_content_type: application/gzip
+
+  build-iso:
+    name: Build ISO
+    needs: create-release
+    runs-on: ubuntu-latest
+    container:
+      image: archlinux:latest
+      options: --privileged
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install dependencies
+        run: |
+          pacman -Syu --noconfirm
+          pacman -S --noconfirm \
+            archiso \
+            git \
+            rust \
+            cargo \
+            base-devel \
+            libwayland \
+            wayland-protocols
+            
+      - name: Build packages
+        run: cargo build --release --workspace
+        
+      - name: Build ISO
+        run: |
+          cd iso
+          chmod +x build.sh
+          ./build.sh full
+          
+      - name: Upload ISO
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create-release.outputs.upload_url }}
+          asset_path: ./iso/out/rururu-*-x86_64.iso
+          asset_name: rururu-${{ github.ref_name }}-x86_64.iso
+          asset_content_type: application/x-iso9660-image

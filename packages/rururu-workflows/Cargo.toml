@@ -1,0 +1,32 @@
+[package]
+name = "rururu-workflows"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "Workflow profiles for creative applications in RururuOS"
+
+[lib]
+name = "rururu_workflows"
+path = "src/lib.rs"
+
+[[bin]]
+name = "rururu-workflow"
+path = "src/bin/main.rs"
+
+[dependencies]
+tokio.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+tracing.workspace = true
+
+# Config
+toml = "0.8"
+dirs = "5"
+
+# D-Bus
+zbus = "4"
+
+# Process management
+nix = { version = "0.29", features = ["process", "signal"] }

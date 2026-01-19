@@ -1,0 +1,20 @@
+[Unit]
+Description=RururuOS Universal File Handler
+After=dbus.service
+Wants=dbus.service
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/rururu-file-handler
+Restart=on-failure
+RestartSec=5
+
+# Security hardening
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=read-only
+PrivateTmp=yes
+ReadWritePaths=/var/cache/rururu
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,264 @@
+# RururuOS Sway Configuration
+# Creative Professional Workflow Optimized
+
+### Variables
+set $mod Mod4
+set $left h
+set $down j
+set $up k
+set $right l
+set $term foot
+set $menu wofi --show drun -I
+
+### Output configuration
+# High refresh rate for smooth editing
+output * {
+    adaptive_sync on
+    render_bit_depth 10
+}
+
+# Example multi-monitor setup for creative work
+# output DP-1 resolution 3840x2160@60Hz position 0,0 scale 1.5
+# output DP-2 resolution 2560x1440@144Hz position 2560,0
+
+### Input configuration
+input type:pointer {
+    accel_profile flat
+    pointer_accel 0
+}
+
+input type:tablet_tool {
+    left_handed disabled
+    tap enabled
+}
+
+input type:keyboard {
+    xkb_layout us,ru
+    xkb_options grp:alt_shift_toggle,caps:escape
+    repeat_delay 200
+    repeat_rate 50
+}
+
+### Appearance
+default_border pixel 2
+default_floating_border pixel 2
+gaps inner 8
+gaps outer 4
+smart_gaps on
+smart_borders on
+
+# Color scheme - Dark creative theme
+# class                 border  background text    indicator child_border
+client.focused          #7aa2f7 #1a1b26    #c0caf5 #7dcfff   #7aa2f7
+client.focused_inactive #414868 #1a1b26    #a9b1d6 #414868   #414868
+client.unfocused        #414868 #1a1b26    #565f89 #414868   #414868
+client.urgent           #f7768e #1a1b26    #c0caf5 #f7768e   #f7768e
+
+### Idle configuration
+exec swayidle -w \
+    timeout 600 'swaylock -f -c 1a1b26' \
+    timeout 900 'swaymsg "output * power off"' \
+    resume 'swaymsg "output * power on"' \
+    before-sleep 'swaylock -f -c 1a1b26'
+
+### Key bindings
+
+# Basics
+bindsym $mod+Return exec $term
+bindsym $mod+Shift+q kill
+bindsym $mod+d exec $menu
+floating_modifier $mod normal
+bindsym $mod+Shift+c reload
+bindsym $mod+Shift+e exec swaynag -t warning -m 'Exit sway?' -B 'Yes' 'swaymsg exit'
+
+# Movement
+bindsym $mod+$left focus left
+bindsym $mod+$down focus down
+bindsym $mod+$up focus up
+bindsym $mod+$right focus right
+bindsym $mod+Left focus left
+bindsym $mod+Down focus down
+bindsym $mod+Up focus up
+bindsym $mod+Right focus right
+
+bindsym $mod+Shift+$left move left
+bindsym $mod+Shift+$down move down
+bindsym $mod+Shift+$up move up
+bindsym $mod+Shift+$right move right
+
+# Workspaces - Creative workflow
+set $ws1 "1:  Files"
+set $ws2 "2:  Edit"
+set $ws3 "3:  Preview"
+set $ws4 "4:  Render"
+set $ws5 "5:  Audio"
+set $ws6 "6:  3D"
+set $ws7 "7:  Code"
+set $ws8 "8:  Web"
+set $ws9 "9:  Chat"
+set $ws10 "10:  System"
+
+bindsym $mod+1 workspace $ws1
+bindsym $mod+2 workspace $ws2
+bindsym $mod+3 workspace $ws3
+bindsym $mod+4 workspace $ws4
+bindsym $mod+5 workspace $ws5
+bindsym $mod+6 workspace $ws6
+bindsym $mod+7 workspace $ws7
+bindsym $mod+8 workspace $ws8
+bindsym $mod+9 workspace $ws9
+bindsym $mod+0 workspace $ws10
+
+bindsym $mod+Shift+1 move container to workspace $ws1
+bindsym $mod+Shift+2 move container to workspace $ws2
+bindsym $mod+Shift+3 move container to workspace $ws3
+bindsym $mod+Shift+4 move container to workspace $ws4
+bindsym $mod+Shift+5 move container to workspace $ws5
+bindsym $mod+Shift+6 move container to workspace $ws6
+bindsym $mod+Shift+7 move container to workspace $ws7
+bindsym $mod+Shift+8 move container to workspace $ws8
+bindsym $mod+Shift+9 move container to workspace $ws9
+bindsym $mod+Shift+0 move container to workspace $ws10
+
+# Layout
+bindsym $mod+b splith
+bindsym $mod+v splitv
+bindsym $mod+s layout stacking
+bindsym $mod+w layout tabbed
+bindsym $mod+e layout toggle split
+bindsym $mod+f fullscreen
+bindsym $mod+Shift+space floating toggle
+bindsym $mod+space focus mode_toggle
+bindsym $mod+a focus parent
+
+# Scratchpad
+bindsym $mod+Shift+minus move scratchpad
+bindsym $mod+minus scratchpad show
+
+# Resize mode
+mode "resize" {
+    bindsym $left resize shrink width 10px
+    bindsym $down resize grow height 10px
+    bindsym $up resize shrink height 10px
+    bindsym $right resize grow width 10px
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+bindsym $mod+r mode "resize"
+
+### Creative workflow shortcuts
+
+# Screenshot tools
+bindsym Print exec grim - | wl-copy
+bindsym Shift+Print exec grim -g "$(slurp)" - | wl-copy
+bindsym $mod+Print exec grim ~/Pictures/Screenshots/$(date +%Y%m%d_%H%M%S).png
+bindsym $mod+Shift+Print exec grim -g "$(slurp)" ~/Pictures/Screenshots/$(date +%Y%m%d_%H%M%S).png
+
+# Screen recording
+bindsym $mod+Shift+r exec wf-recorder -g "$(slurp)" -f ~/Videos/Recording_$(date +%Y%m%d_%H%M%S).mp4
+
+# Color picker
+bindsym $mod+c exec grim -g "$(slurp -p)" -t ppm - | convert - -format '%[pixel:p{0,0}]' txt:- | tail -1 | cut -d ' ' -f 4 | wl-copy
+
+# Quick app launchers
+bindsym $mod+g exec gimp
+bindsym $mod+i exec inkscape
+bindsym $mod+p exec krita
+bindsym $mod+Shift+b exec blender
+bindsym $mod+Shift+d exec darktable
+bindsym $mod+Shift+k exec kdenlive
+bindsym $mod+Shift+a exec ardour
+
+# File manager
+bindsym $mod+n exec nautilus
+bindsym $mod+Shift+n exec rururu-files
+
+# Audio control
+bindsym XF86AudioRaiseVolume exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+
+bindsym XF86AudioLowerVolume exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-
+bindsym XF86AudioMute exec wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
+bindsym XF86AudioMicMute exec wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle
+
+# Brightness
+bindsym XF86MonBrightnessDown exec brightnessctl set 5%-
+bindsym XF86MonBrightnessUp exec brightnessctl set +5%
+
+# Media
+bindsym XF86AudioPlay exec playerctl play-pause
+bindsym XF86AudioNext exec playerctl next
+bindsym XF86AudioPrev exec playerctl previous
+
+### Window rules for creative apps
+
+# Image editors - always on workspace 2
+assign [app_id="gimp"] $ws2
+assign [app_id="krita"] $ws2
+assign [app_id="org.inkscape.Inkscape"] $ws2
+
+# Video editors - workspace 2 or 4
+assign [app_id="kdenlive"] $ws2
+assign [class="DaVinci Resolve"] $ws2
+
+# 3D apps - workspace 6
+assign [class="Blender"] $ws6
+assign [app_id="org.freecadweb.FreeCAD"] $ws6
+
+# Audio apps - workspace 5
+assign [app_id="ardour"] $ws5
+assign [app_id="org.audacityteam.Audacity"] $ws5
+
+# Preview apps floating
+for_window [app_id="imv"] floating enable
+for_window [app_id="mpv"] floating enable
+for_window [app_id="org.gnome.Loupe"] floating enable
+
+# Color pickers floating
+for_window [app_id="gpick"] floating enable
+for_window [title="Color Picker"] floating enable
+
+# Dialogs floating
+for_window [window_role="pop-up"] floating enable
+for_window [window_role="dialog"] floating enable
+for_window [window_type="dialog"] floating enable
+
+# File handler daemon notification
+for_window [app_id="rururu-file-handler"] floating enable, move position center
+
+### Status bar
+bar {
+    swaybar_command waybar
+}
+
+### Autostart
+exec_always {
+    # Import environment
+    gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'
+    gsettings set org.gnome.desktop.interface icon-theme 'Papirus-Dark'
+    gsettings set org.gnome.desktop.interface cursor-theme 'Adwaita'
+    gsettings set org.gnome.desktop.interface font-name 'Inter 11'
+    gsettings set org.gnome.desktop.interface monospace-font-name 'JetBrains Mono 10'
+}
+
+exec {
+    # Notification daemon
+    mako
+    
+    # Polkit agent
+    /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
+    
+    # PipeWire session
+    pipewire
+    pipewire-pulse
+    wireplumber
+    
+    # File handler daemon
+    rururu-file-handler
+    
+    # Clipboard manager
+    wl-paste --watch cliphist store
+    
+    # Auto-mount
+    udiskie -t
+}
+
+include /etc/sway/config.d/*

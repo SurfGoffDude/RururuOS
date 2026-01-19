@@ -1,0 +1,30 @@
+[workspace]
+resolver = "2"
+members = [
+    "packages/rururu-file-handler",
+    "packages/rururu-desktop",
+    "packages/rururu-plugin-example",
+    "packages/rururu-wrappers",
+    "packages/rururu-utils",
+    "packages/rururu-files",
+    "packages/rururu-settings",
+    "packages/rururu-monitor",
+    "packages/rururu-colorcal",
+    "packages/rururu-color",
+    "packages/rururu-workflows",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+authors = ["RururuOS Team"]
+license = "MIT"
+repository = "https://github.com/user/RururuOS"
+
+[workspace.dependencies]
+tokio = { version = "1", features = ["full"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "1"
+tracing = "0.1"
+tracing-subscriber = "0.3"

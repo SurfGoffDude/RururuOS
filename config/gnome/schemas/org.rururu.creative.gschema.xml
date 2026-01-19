@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <schema id="org.rururu.creative" path="/org/rururu/creative/">
+    
+    <!-- Workspace Configuration -->
+    <key name="workspace-names" type="as">
+      <default>['Files', 'Edit', 'Preview', 'Render', 'Audio', '3D', 'Code', 'Web']</default>
+      <summary>Workspace names for creative workflow</summary>
+    </key>
+    
+    <key name="auto-assign-apps" type="b">
+      <default>true</default>
+      <summary>Auto-assign creative apps to workspaces</summary>
+    </key>
+    
+    <!-- Theme -->
+    <key name="color-scheme" type="s">
+      <default>'tokyo-night'</default>
+      <summary>Color scheme name</summary>
+    </key>
+    
+    <key name="accent-color" type="s">
+      <default>'#7aa2f7'</default>
+      <summary>Accent color hex value</summary>
+    </key>
+    
+    <!-- Creative Apps Shortcuts -->
+    <key name="gimp-shortcut" type="s">
+      <default>'&lt;Super&gt;g'</default>
+      <summary>GIMP launch shortcut</summary>
+    </key>
+    
+    <key name="blender-shortcut" type="s">
+      <default>'&lt;Super&gt;&lt;Shift&gt;b'</default>
+      <summary>Blender launch shortcut</summary>
+    </key>
+    
+    <key name="inkscape-shortcut" type="s">
+      <default>'&lt;Super&gt;i'</default>
+      <summary>Inkscape launch shortcut</summary>
+    </key>
+    
+    <key name="kdenlive-shortcut" type="s">
+      <default>'&lt;Super&gt;&lt;Shift&gt;k'</default>
+      <summary>Kdenlive launch shortcut</summary>
+    </key>
+    
+    <key name="ardour-shortcut" type="s">
+      <default>'&lt;Super&gt;&lt;Shift&gt;a'</default>
+      <summary>Ardour launch shortcut</summary>
+    </key>
+    
+    <!-- File Handler -->
+    <key name="enable-thumbnails" type="b">
+      <default>true</default>
+      <summary>Generate thumbnails for files</summary>
+    </key>
+    
+    <key name="thumbnail-size" type="i">
+      <default>256</default>
+      <summary>Thumbnail size in pixels</summary>
+    </key>
+    
+    <key name="cache-metadata" type="b">
+      <default>true</default>
+      <summary>Cache file metadata</summary>
+    </key>
+    
+  </schema>
+</schemalist>

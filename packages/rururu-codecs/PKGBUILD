@@ -1,0 +1,102 @@
+# Maintainer: RururuOS Team
+pkgname=rururu-codecs
+pkgver=1.0.0
+pkgrel=1
+pkgdesc="Meta-package for all multimedia codecs in RururuOS"
+arch=('x86_64' 'aarch64')
+url="https://github.com/user/RururuOS"
+license=('MIT')
+
+depends=(
+    # === FFmpeg with full codec support ===
+    'ffmpeg'
+    
+    # === Audio Codecs ===
+    # Lossless
+    'flac'
+    'wavpack'
+    'libfdk-aac'
+    
+    # Lossy
+    'lame'           # MP3
+    'opus'           # Opus
+    'libvorbis'      # Vorbis
+    'faac'           # AAC
+    'speex'          # Speex
+    
+    # === Video Codecs ===
+    'x264'           # H.264
+    'x265'           # H.265/HEVC
+    'libvpx'         # VP8/VP9
+    'aom'            # AV1 (libaom)
+    'svt-av1'        # AV1 (SVT)
+    'dav1d'          # AV1 decoder
+    'rav1e'          # AV1 encoder
+    
+    # === Image Codecs ===
+    'libjpeg-turbo'  # JPEG
+    'libpng'         # PNG
+    'libwebp'        # WebP
+    'libavif'        # AVIF
+    'libheif'        # HEIC
+    'libtiff'        # TIFF
+    'openexr'        # EXR
+    'libraw'         # Camera RAW
+    'libjxl'         # JPEG XL
+    
+    # === GStreamer ===
+    'gstreamer'
+    'gst-plugins-base'
+    'gst-plugins-good'
+    'gst-plugins-bad'
+    'gst-plugins-ugly'
+    'gst-libav'
+    
+    # === Document support ===
+    'poppler'        # PDF
+    
+    # === 3D ===
+    'assimp'         # 3D model formats
+    
+    # === Color Management ===
+    'opencolorio'
+)
+
+optdepends=(
+    'nvidia-utils: NVIDIA hardware acceleration'
+    'libva-mesa-driver: AMD/Intel hardware acceleration'
+    'intel-media-driver: Intel hardware acceleration'
+)
+
+package() {
+    # This is a meta-package, no files to install
+    # All functionality comes from dependencies
+    
+    # Install documentation
+    install -Dm644 /dev/stdin "$pkgdir/usr/share/doc/$pkgname/README.md" << 'EOF'
+# RururuOS Codecs
+
+This meta-package installs all multimedia codecs supported by RururuOS.
+
+## Included Codecs
+
+### Video
+- H.264, H.265/HEVC, AV1, VP8, VP9
+
+### Audio  
+- FLAC, MP3, AAC, Opus, Vorbis, WavPack
+
+### Image
+- JPEG, PNG, WebP, AVIF, HEIC, TIFF, EXR, RAW, JPEG XL
+
+### 3D
+- via Assimp: glTF, FBX, OBJ, COLLADA, USD, STL, 3MF
+
+## Hardware Acceleration
+
+Install appropriate drivers for GPU acceleration:
+- NVIDIA: nvidia-utils
+- AMD: libva-mesa-driver  
+- Intel: intel-media-driver
+EOF
+}

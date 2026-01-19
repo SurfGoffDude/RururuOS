@@ -1,0 +1,31 @@
+[package]
+name = "rururu-wrappers"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "Rust wrappers for multimedia libraries in RururuOS"
+
+[features]
+default = ["openexr", "assimp"]
+openexr = ["dep:openexr"]
+assimp = ["dep:russimp"]
+draco = []
+ocio = []
+
+[dependencies]
+thiserror.workspace = true
+tracing.workspace = true
+
+# OpenEXR for HDR images
+openexr = { version = "1.0", optional = true }
+
+# Assimp for 3D model loading
+russimp = { version = "2", optional = true }
+
+# Common types
+half = "2"
+glam = "0.29"
+
+[dev-dependencies]
+tempfile = "3"

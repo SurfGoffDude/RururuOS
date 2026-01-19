@@ -1,0 +1,38 @@
+[package]
+name = "rururu-color"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "Color management system for RururuOS with OpenColorIO and ICC support"
+
+[lib]
+name = "rururu_color"
+path = "src/lib.rs"
+
+[[bin]]
+name = "rururu-color-daemon"
+path = "src/bin/daemon.rs"
+
+[dependencies]
+tokio.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+tracing.workspace = true
+
+# Color management
+lcms2 = "6"
+
+# D-Bus service
+zbus = "4"
+
+# Config
+toml = "0.8"
+dirs = "5"
+
+# Wayland
+wayland-client = "0.31"
+
+[build-dependencies]
+pkg-config = "0.3"
