@@ -44,7 +44,7 @@ jobs:
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
           
       - name: Check
-        run: cargo check -p rururu-plugin-example -p rururu-utils -p rururu-settings -p rururu-monitor -p rururu-colorcal -p rururu-color -p rururu-workflows
+        run: cargo check --workspace
 
   fmt:
     name: Format
@@ -79,7 +79,7 @@ jobs:
             pkg-config
             
       - name: Clippy
-        run: cargo clippy -p rururu-plugin-example -p rururu-utils -p rururu-settings -p rururu-monitor -p rururu-colorcal -p rururu-color -p rururu-workflows -- -D warnings
+        run: cargo clippy --workspace -- -D warnings
 
   test:
     name: Test
@@ -102,7 +102,7 @@ jobs:
             pkg-config
             
       - name: Run tests
-        run: cargo test -p rururu-plugin-example -p rururu-utils -p rururu-settings -p rururu-monitor -p rururu-colorcal -p rururu-color -p rururu-workflows
+        run: cargo test --workspace
 
   build:
     name: Build
@@ -131,7 +131,7 @@ jobs:
             pkg-config
             
       - name: Build
-        run: cargo build --release -p rururu-plugin-example -p rururu-utils -p rururu-settings -p rururu-monitor -p rururu-colorcal -p rururu-color -p rururu-workflows --target ${{ matrix.target }}
+        run: cargo build --release --workspace --target ${{ matrix.target }}
         
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
@@ -158,7 +158,7 @@ jobs:
         run: cargo install cross --git https://github.com/cross-rs/cross
         
       - name: Build ARM64
-        run: cross build --release -p rururu-plugin-example -p rururu-utils -p rururu-settings -p rururu-monitor -p rururu-colorcal -p rururu-color -p rururu-workflows --target aarch64-unknown-linux-gnu
+        run: cross build --release --workspace --target aarch64-unknown-linux-gnu
         continue-on-error: true
         
       - name: Upload ARM64 artifacts

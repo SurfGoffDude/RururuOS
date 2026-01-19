@@ -1,17 +1,22 @@
 [workspace]
 resolver = "2"
 members = [
-    "packages/rururu-file-handler",
-    "packages/rururu-desktop",
     "packages/rururu-plugin-example",
-    "packages/rururu-wrappers",
     "packages/rururu-utils",
-    "packages/rururu-files",
     "packages/rururu-settings",
     "packages/rururu-monitor",
     "packages/rururu-colorcal",
     "packages/rururu-color",
     "packages/rururu-workflows",
+]
+
+# Packages requiring system libraries (ffmpeg, openexr, assimp)
+# Build locally with: cargo build -p rururu-file-handler --manifest-path packages/rururu-file-handler/Cargo.toml
+exclude = [
+    "packages/rururu-file-handler",
+    "packages/rururu-desktop",
+    "packages/rururu-wrappers",
+    "packages/rururu-files",
 ]
 
 [workspace.package]
