@@ -8,28 +8,28 @@ use iced::{Application, Command, Element, Length, Theme};
 pub enum Message {
     // Navigation
     SelectTab(Tab),
-    
+
     // Display selection
     SelectDisplay(String),
     RefreshDisplays,
-    
+
     // Calibration
     StartCalibration,
     NextStep,
     PreviousStep,
     CancelCalibration,
     SaveProfile,
-    
+
     // Adjustments
     BrightnessChanged(f32),
     ContrastChanged(f32),
     GammaChanged(f32),
     WhitePointChanged(u32),
-    
+
     // Test patterns
     SelectPattern(TestPattern),
     ToggleFullscreen,
-    
+
     // Profile management
     SelectProfile(String),
     ApplyProfile,
@@ -67,7 +67,7 @@ pub struct ColorCalApp {
     selected_profile: Option<String>,
     current_pattern: TestPattern,
     fullscreen_pattern: bool,
-    
+
     // Current adjustments
     brightness: f32,
     contrast: f32,
@@ -211,17 +211,10 @@ impl Application for ColorCalApp {
             Tab::Settings => self.view_settings(),
         };
 
-        container(
-            column![
-                tabs,
-                Space::with_height(Length::Fixed(16.0)),
-                content,
-            ]
-            .padding(16),
-        )
-        .width(Length::Fill)
-        .height(Length::Fill)
-        .into()
+        container(column![tabs, Space::with_height(Length::Fixed(16.0)), content,].padding(16))
+            .width(Length::Fill)
+            .height(Length::Fill)
+            .into()
     }
 
     fn theme(&self) -> Theme {
@@ -233,7 +226,7 @@ impl ColorCalApp {
     fn view_calibrate(&self) -> Element<Message> {
         // Display selector
         let display_names: Vec<String> = self.displays.iter().map(|d| d.name.clone()).collect();
-        
+
         let display_selector = row![
             text("Display:").size(14),
             Space::with_width(Length::Fixed(8.0)),
@@ -264,12 +257,21 @@ impl ColorCalApp {
                 row![
                     text("Resolution:").size(12),
                     Space::with_width(Length::Fixed(8.0)),
-                    text(format!("{}×{} @ {}Hz", display.resolution.0, display.resolution.1, display.refresh_rate)).size(12),
+                    text(format!(
+                        "{}×{} @ {}Hz",
+                        display.resolution.0, display.resolution.1, display.refresh_rate
+                    ))
+                    .size(12),
                 ],
                 row![
                     text("HDR:").size(12),
                     Space::with_width(Length::Fixed(8.0)),
-                    text(if display.hdr_capable { "Supported" } else { "Not supported" }).size(12),
+                    text(if display.hdr_capable {
+                        "Supported"
+                    } else {
+                        "Not supported"
+                    })
+                    .size(12),
                 ],
                 row![
                     text("Current Profile:").size(12),
@@ -290,7 +292,6 @@ impl ColorCalApp {
             column![
                 text("Quick Calibration").size(16),
                 Space::with_height(Length::Fixed(16.0)),
-                
                 row![
                     text("Brightness").width(Length::Fixed(100.0)),
                     slider(0.0..=100.0, self.brightness, Message::BrightnessChanged),
@@ -298,7 +299,6 @@ impl ColorCalApp {
                 ]
                 .spacing(8)
                 .align_items(iced::Alignment::Center),
-
                 row![
                     text("Contrast").width(Length::Fixed(100.0)),
                     slider(0.0..=100.0, self.contrast, Message::ContrastChanged),
@@ -306,7 +306,6 @@ impl ColorCalApp {
                 ]
                 .spacing(8)
                 .align_items(iced::Alignment::Center),
-
                 row![
                     text("Gamma").width(Length::Fixed(100.0)),
                     slider(1.0..=3.0, self.gamma, Message::GammaChanged).step(0.1),
@@ -314,17 +313,17 @@ impl ColorCalApp {
                 ]
                 .spacing(8)
                 .align_items(iced::Alignment::Center),
-
                 row![
                     text("White Point").width(Length::Fixed(100.0)),
-                    slider(5000.0..=9000.0, self.white_point as f32, |v| Message::WhitePointChanged(v as u32)).step(100.0),
+                    slider(5000.0..=9000.0, self.white_point as f32, |v| {
+                        Message::WhitePointChanged(v as u32)
+                    })
+                    .step(100.0),
                     text(format!("{}K", self.white_point)).width(Length::Fixed(50.0)),
                 ]
                 .spacing(8)
                 .align_items(iced::Alignment::Center),
-
                 Space::with_height(Length::Fixed(24.0)),
-
                 row![
                     button(text("Start Guided Calibration"))
                         .style(iced::theme::Button::Primary)
@@ -439,8 +438,7 @@ impl ColorCalApp {
                         .style(iced::theme::Button::Secondary)
                         .on_press(Message::PreviousStep)
                 } else {
-                    button(text("Previous"))
-                        .style(iced::theme::Button::Secondary)
+                    button(text("Previous")).style(iced::theme::Button::Secondary)
                 },
                 Space::with_width(Length::Fixed(8.0)),
                 button(text("Cancel"))
@@ -468,7 +466,7 @@ impl ColorCalApp {
             .iter()
             .map(|profile| {
                 let is_selected = self.selected_profile.as_ref() == Some(&profile.name);
-                
+
                 button(
                     row![
                         column![
@@ -568,36 +566,29 @@ impl ColorCalApp {
         column![
             text("Calibration Settings").size(18),
             Space::with_height(Length::Fixed(16.0)),
-
             row![
                 text("Default White Point").width(Length::Fixed(200.0)),
                 text("6500K (D65)"),
             ]
             .spacing(8),
-
             row![
                 text("Default Gamma").width(Length::Fixed(200.0)),
                 text("2.2 (sRGB)"),
             ]
             .spacing(8),
-
             row![
                 text("Profile Location").width(Length::Fixed(200.0)),
                 text("~/.local/share/icc/"),
             ]
             .spacing(8),
-
             Space::with_height(Length::Fixed(24.0)),
-
             text("Color Spaces").size(18),
             Space::with_height(Length::Fixed(8.0)),
-
             row![
                 text("Working Space").width(Length::Fixed(200.0)),
                 text("sRGB"),
             ]
             .spacing(8),
-
             row![
                 text("CMYK Profile").width(Length::Fixed(200.0)),
                 text("None"),

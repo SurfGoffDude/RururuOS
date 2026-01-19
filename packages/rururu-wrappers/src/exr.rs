@@ -257,7 +257,8 @@ impl ExrImage {
     }
 
     pub fn tonemap_reinhard(&self) -> Vec<u8> {
-        let mut result = Vec::with_capacity((self.metadata.width * self.metadata.height * 3) as usize);
+        let mut result =
+            Vec::with_capacity((self.metadata.width * self.metadata.height * 3) as usize);
 
         for chunk in self.pixels.chunks(4) {
             let r = chunk[0] / (1.0 + chunk[0]);

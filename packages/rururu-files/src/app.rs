@@ -15,7 +15,7 @@ pub enum Message {
     NavigateForward,
     NavigateUp,
     NavigateHome,
-    
+
     // File operations
     FileSelected(PathBuf),
     FileDoubleClicked(PathBuf),
@@ -27,37 +27,37 @@ pub enum Message {
     CutSelected,
     Paste,
     NewFolder,
-    
+
     // View
     ToggleHiddenFiles,
     SetViewMode(ViewMode),
     TogglePreview,
-    
+
     // Search
     SearchChanged(String),
     SearchSubmit,
-    
+
     // Sidebar
     BookmarkClicked(PathBuf),
     AddBookmark,
     RemoveBookmark(PathBuf),
-    
+
     // Preview
     PreviewLoaded(PreviewData),
     PreviewError(String),
-    
+
     // File system events
     DirectoryChanged,
     RefreshDirectory,
-    
+
     // Async results
     FilesLoaded(Vec<FileEntry>),
     MetadataLoaded(PathBuf, serde_json::Value),
     ThumbnailLoaded(PathBuf, Vec<u8>),
-    
+
     // Errors
     Error(String),
-    
+
     // Tags
     ToggleTagPanel,
     TagInputChanged(String),
@@ -67,7 +67,7 @@ pub enum Message {
     AddTagToFile(String),
     RemoveTagFromFile(String),
     ToggleTagFilter(String),
-    
+
     // Batch operations
     BatchToggleSelect(std::path::PathBuf),
     BatchSelectAll,
@@ -99,22 +99,22 @@ pub struct RururuFiles {
     current_path: PathBuf,
     history: Vec<PathBuf>,
     history_index: usize,
-    
+
     files: Vec<FileEntry>,
     selected: Option<PathBuf>,
-    
+
     show_hidden: bool,
     view_mode: ViewMode,
     show_preview: bool,
-    
+
     search_query: String,
-    
+
     bookmarks: Vec<PathBuf>,
-    
+
     preview_data: PreviewData,
-    
+
     clipboard: Option<(Vec<PathBuf>, bool)>, // (paths, is_cut)
-    
+
     loading: bool,
     error: Option<String>,
 }
@@ -127,7 +127,7 @@ impl Application for RururuFiles {
 
     fn new(_flags: ()) -> (Self, Command<Message>) {
         let home = dirs::home_dir().unwrap_or_else(|| PathBuf::from("/"));
-        
+
         let bookmarks = vec![
             dirs::home_dir().unwrap_or_default(),
             dirs::document_dir().unwrap_or_default(),
@@ -157,12 +157,13 @@ impl Application for RururuFiles {
             error: None,
         };
 
-        (app, Command::perform(load_directory(home), |result| {
-            match result {
+        (
+            app,
+            Command::perform(load_directory(home), |result| match result {
                 Ok(files) => Message::FilesLoaded(files),
                 Err(e) => Message::Error(e.to_string()),
-            }
-        }))
+            }),
+        )
     }
 
     fn title(&self) -> String {
@@ -175,57 +176,51 @@ impl Application for RururuFiles {
                 if path.is_dir() {
                     info!("Navigating to: {:?}", path);
                     self.current_path = path.clone();
-                    
+
                     // Update history
                     self.history.truncate(self.history_index + 1);
                     self.history.push(path.clone());
                     self.history_index = self.history.len() - 1;
-                    
+
                     self.loading = true;
                     self.selected = None;
                     self.preview_data = PreviewData::None;
-                    
-                    return Command::perform(load_directory(path), |result| {
-                        match result {
-                            Ok(files) => Message::FilesLoaded(files),
-                            Err(e) => Message::Error(e.to_string()),
-                        }
+
+                    return Command::perform(load_directory(path), |result| match result {
+                        Ok(files) => Message::FilesLoaded(files),
+                        Err(e) => Message::Error(e.to_string()),
                     });
                 }
             }
-            
+
             Message::NavigateBack => {
                 if self.history_index > 0 {
                     self.history_index -= 1;
                     let path = self.history[self.history_index].clone();
                     self.current_path = path.clone();
                     self.loading = true;
-                    
-                    return Command::perform(load_directory(path), |result| {
-                        match result {
-                            Ok(files) => Message::FilesLoaded(files),
-                            Err(e) => Message::Error(e.to_string()),
-                        }
+
+                    return Command::perform(load_directory(path), |result| match result {
+                        Ok(files) => Message::FilesLoaded(files),
+                        Err(e) => Message::Error(e.to_string()),
                     });
                 }
             }
-            
+
             Message::NavigateForward => {
                 if self.history_index < self.history.len() - 1 {
                     self.history_index += 1;
                     let path = self.history[self.history_index].clone();
                     self.current_path = path.clone();
                     self.loading = true;
-                    
-                    return Command::perform(load_directory(path), |result| {
-                        match result {
-                            Ok(files) => Message::FilesLoaded(files),
-                            Err(e) => Message::Error(e.to_string()),
-                        }
+
+                    return Command::perform(load_directory(path), |result| match result {
+                        Ok(files) => Message::FilesLoaded(files),
+                        Err(e) => Message::Error(e.to_string()),
                     });
                 }
             }
-            
+
             Message::NavigateUp => {
                 if let Some(parent) = self.current_path.parent() {
                     return Command::perform(
@@ -234,28 +229,25 @@ impl Application for RururuFiles {
                     );
                 }
             }
-            
+
             Message::NavigateHome => {
                 if let Some(home) = dirs::home_dir() {
                     return Command::perform(async move { home }, Message::NavigateTo);
                 }
             }
-            
+
             Message::FileSelected(path) => {
                 debug!("File selected: {:?}", path);
                 self.selected = Some(path.clone());
-                
+
                 if self.show_preview {
-                    return Command::perform(
-                        load_preview(path),
-                        |result| match result {
-                            Ok(data) => Message::PreviewLoaded(data),
-                            Err(e) => Message::PreviewError(e.to_string()),
-                        },
-                    );
+                    return Command::perform(load_preview(path), |result| match result {
+                        Ok(data) => Message::PreviewLoaded(data),
+                        Err(e) => Message::PreviewError(e.to_string()),
+                    });
                 }
             }
-            
+
             Message::FileDoubleClicked(path) => {
                 if path.is_dir() {
                     return Command::perform(async move { path }, Message::NavigateTo);
@@ -263,14 +255,14 @@ impl Application for RururuFiles {
                     return Command::perform(async move { path }, Message::OpenFile);
                 }
             }
-            
+
             Message::OpenFile(path) => {
                 debug!("Opening file: {:?}", path);
                 if let Err(e) = open::that(&path) {
                     self.error = Some(format!("Failed to open file: {}", e));
                 }
             }
-            
+
             Message::DeleteSelected => {
                 if let Some(ref path) = self.selected {
                     let path = path.clone();
@@ -286,85 +278,81 @@ impl Application for RururuFiles {
                     );
                 }
             }
-            
+
             Message::ToggleHiddenFiles => {
                 self.show_hidden = !self.show_hidden;
-                return Command::perform(
-                    load_directory(self.current_path.clone()),
-                    |result| match result {
+                return Command::perform(load_directory(self.current_path.clone()), |result| {
+                    match result {
                         Ok(files) => Message::FilesLoaded(files),
                         Err(e) => Message::Error(e.to_string()),
-                    },
-                );
+                    }
+                });
             }
-            
+
             Message::SetViewMode(mode) => {
                 self.view_mode = mode;
             }
-            
+
             Message::TogglePreview => {
                 self.show_preview = !self.show_preview;
             }
-            
+
             Message::SearchChanged(query) => {
                 self.search_query = query;
             }
-            
+
             Message::BookmarkClicked(path) => {
                 return Command::perform(async move { path }, Message::NavigateTo);
             }
-            
+
             Message::FilesLoaded(files) => {
                 let mut files = files;
                 if !self.show_hidden {
                     files.retain(|f| !f.name.starts_with('.'));
                 }
-                
+
                 // Apply search filter
                 if !self.search_query.is_empty() {
                     let query = self.search_query.to_lowercase();
                     files.retain(|f| f.name.to_lowercase().contains(&query));
                 }
-                
+
                 // Sort: directories first, then by name
-                files.sort_by(|a, b| {
-                    match (a.is_dir, b.is_dir) {
-                        (true, false) => std::cmp::Ordering::Less,
-                        (false, true) => std::cmp::Ordering::Greater,
-                        _ => a.name.to_lowercase().cmp(&b.name.to_lowercase()),
-                    }
+                files.sort_by(|a, b| match (a.is_dir, b.is_dir) {
+                    (true, false) => std::cmp::Ordering::Less,
+                    (false, true) => std::cmp::Ordering::Greater,
+                    _ => a.name.to_lowercase().cmp(&b.name.to_lowercase()),
                 });
-                
+
                 self.files = files;
                 self.loading = false;
                 self.error = None;
             }
-            
+
             Message::PreviewLoaded(data) => {
                 self.preview_data = data;
             }
-            
+
             Message::PreviewError(e) => {
                 debug!("Preview error: {}", e);
                 self.preview_data = PreviewData::None;
             }
-            
+
             Message::RefreshDirectory => {
                 self.loading = true;
-                return Command::perform(
-                    load_directory(self.current_path.clone()),
-                    |result| match result {
+                return Command::perform(load_directory(self.current_path.clone()), |result| {
+                    match result {
                         Ok(files) => Message::FilesLoaded(files),
                         Err(e) => Message::Error(e.to_string()),
-                    },
-                );
+                    }
+                });
             }
-            
+
             Message::Error(e) => {
                 self.error = Some(e);
                 self.loading = false;
             }
-            
+
             _ => {}
         }
 
@@ -375,34 +363,25 @@ impl Application for RururuFiles {
         let toolbar = Toolbar::view(self);
         let sidebar = Sidebar::view(&self.bookmarks, &self.current_path);
         let file_list = FileList::view(&self.files, &self.selected, self.view_mode);
-        
+
         let main_content = if self.show_preview {
-            row![
-                file_list,
-                Preview::view(&self.preview_data, &self.selected),
-            ]
-            .spacing(8)
+            row![file_list, Preview::view(&self.preview_data, &self.selected),].spacing(8)
         } else {
             row![file_list]
         };
 
-        let content = row![
-            sidebar,
-            column![
-                toolbar,
-                main_content,
-            ]
-            .spacing(8),
-        ]
-        .spacing(8)
-        .padding(8);
+        let content = row![sidebar, column![toolbar, main_content,].spacing(8),]
+            .spacing(8)
+            .padding(8);
 
         let content = if let Some(ref error) = self.error {
             column![
                 content,
-                container(text(error).style(iced::theme::Text::Color(
-                    iced::Color::from_rgb(0.9, 0.3, 0.3)
-                )))
+                container(
+                    text(error).style(iced::theme::Text::Color(iced::Color::from_rgb(
+                        0.9, 0.3, 0.3
+                    )))
+                )
                 .padding(8)
             ]
             .into()
@@ -423,9 +402,9 @@ impl Application for RururuFiles {
 
 async fn load_directory(path: PathBuf) -> Result<Vec<FileEntry>, std::io::Error> {
     let mut entries = Vec::new();
-    
+
     let mut read_dir = tokio::fs::read_dir(&path).await?;
-    
+
     while let Some(entry) = read_dir.next_entry().await? {
         let metadata = entry.metadata().await?;
         let file_type = if metadata.is_dir() {
@@ -451,7 +430,9 @@ async fn load_directory(path: PathBuf) -> Result<Vec<FileEntry>, std::io::Error>
     Ok(entries)
 }
 
-async fn load_preview(path: PathBuf) -> Result<PreviewData, Box<dyn std::error::Error + Send + Sync>> {
+async fn load_preview(
+    path: PathBuf,
+) -> Result<PreviewData, Box<dyn std::error::Error + Send + Sync>> {
     let ext = path
         .extension()
         .and_then(|e| e.to_str())

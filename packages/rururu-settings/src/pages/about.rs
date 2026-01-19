@@ -34,69 +34,66 @@ impl AboutPage {
                 column![
                     text(&self.os_name).size(32),
                     text(&self.os_version).size(14),
-                    text("Creative Workstation OS").size(12)
-                        .style(iced::theme::Text::Color(iced::Color::from_rgb(0.6, 0.6, 0.6))),
+                    text("Creative Workstation OS")
+                        .size(12)
+                        .style(iced::theme::Text::Color(iced::Color::from_rgb(
+                            0.6, 0.6, 0.6
+                        ))),
                 ],
             ]
             .align_items(iced::Alignment::Center)
             .padding(16),
-
             Space::with_height(Length::Fixed(24.0)),
-
             // System info
             text("System Information").size(16),
             Space::with_height(Length::Fixed(8.0)),
-
             Self::info_row("Operating System", &self.os_name),
             Self::info_row("Version", &self.os_version),
             Self::info_row("Kernel", &self.kernel),
             Self::info_row("Desktop", &self.desktop),
-
             Space::with_height(Length::Fixed(24.0)),
-
             // Hardware
             text("Hardware").size(16),
             Space::with_height(Length::Fixed(8.0)),
-
             Self::info_row("Processor", &self.cpu),
             Self::info_row("Memory", &self.memory),
             Self::info_row("Graphics", &self.gpu),
-
             Space::with_height(Length::Fixed(24.0)),
-
             // Actions
             row![
                 button(text("Copy System Info"))
                     .style(iced::theme::Button::Secondary)
                     .on_press(Message::CopySystemInfo),
                 Space::with_width(Length::Fixed(8.0)),
-                button(text("Check for Updates"))
-                    .style(iced::theme::Button::Primary),
+                button(text("Check for Updates")).style(iced::theme::Button::Primary),
             ],
-
             Space::with_height(Length::Fixed(24.0)),
-
             // Credits
             text("Credits").size(16),
             Space::with_height(Length::Fixed(8.0)),
-
-            text("Built with Rust, Iced, and ❤️").size(12)
-                .style(iced::theme::Text::Color(iced::Color::from_rgb(0.6, 0.6, 0.6))),
-            text("Based on Arch Linux").size(12)
-                .style(iced::theme::Text::Color(iced::Color::from_rgb(0.6, 0.6, 0.6))),
-            text("© 2024 RururuOS Team").size(12)
-                .style(iced::theme::Text::Color(iced::Color::from_rgb(0.6, 0.6, 0.6))),
+            text("Built with Rust, Iced, and ❤️")
+                .size(12)
+                .style(iced::theme::Text::Color(iced::Color::from_rgb(
+                    0.6, 0.6, 0.6
+                ))),
+            text("Based on Arch Linux")
+                .size(12)
+                .style(iced::theme::Text::Color(iced::Color::from_rgb(
+                    0.6, 0.6, 0.6
+                ))),
+            text("© 2024 RururuOS Team")
+                .size(12)
+                .style(iced::theme::Text::Color(iced::Color::from_rgb(
+                    0.6, 0.6, 0.6
+                ))),
         ]
         .spacing(4)
         .into()
     }
 
     fn info_row<'a>(label: &'a str, value: &'a str) -> Element<'a, Message> {
-        row![
-            text(label).width(Length::Fixed(150.0)),
-            text(value),
-        ]
-        .padding(8)
-        .into()
+        row![text(label).width(Length::Fixed(150.0)), text(value),]
+            .padding(8)
+            .into()
     }
 }

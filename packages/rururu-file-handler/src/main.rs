@@ -10,9 +10,7 @@ pub use file_detector::FileDetector;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let subscriber = FmtSubscriber::builder()
-        .with_max_level(Level::INFO)
-        .init();
+    let subscriber = FmtSubscriber::builder().with_max_level(Level::INFO).init();
 
     info!("RururuOS File Handler starting...");
 

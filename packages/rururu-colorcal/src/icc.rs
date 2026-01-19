@@ -51,7 +51,7 @@ impl IccProfile {
         // For now, just create a placeholder file
         let metadata = serde_json::to_string_pretty(self)?;
         std::fs::write(&self.path, metadata)?;
-        
+
         Ok(())
     }
 
@@ -93,18 +93,18 @@ impl IccProfile {
 
 fn chrono_lite_timestamp() -> String {
     use std::time::{SystemTime, UNIX_EPOCH};
-    
+
     let duration = SystemTime::now()
         .duration_since(UNIX_EPOCH)
         .unwrap_or_default();
-    
+
     let secs = duration.as_secs();
     let days = secs / 86400;
     let years = 1970 + days / 365;
     let remaining_days = days % 365;
     let months = remaining_days / 30 + 1;
     let day = remaining_days % 30 + 1;
-    
+
     format!("{:04}-{:02}-{:02}", years, months, day)
 }
 
@@ -151,11 +151,13 @@ impl WhitePoint {
         // Approximate calculation
         let temp = kelvin as f32;
         let x = if temp <= 4000.0 {
-            0.27475 + 0.99910e-04 * temp + 0.86070e-08 * temp * temp - 0.90911e-12 * temp * temp * temp
+            0.27475 + 0.99910e-04 * temp + 0.86070e-08 * temp * temp
+                - 0.90911e-12 * temp * temp * temp
         } else {
-            0.24039 + 0.22682e-03 * temp - 0.15614e-06 * temp * temp + 0.31775e-10 * temp * temp * temp
+            0.24039 + 0.22682e-03 * temp - 0.15614e-06 * temp * temp
+                + 0.31775e-10 * temp * temp * temp
         };
-        
+
         let y = -3.0 * x * x + 2.87 * x - 0.275;
 
         Self {

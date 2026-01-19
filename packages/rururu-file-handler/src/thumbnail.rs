@@ -21,9 +21,18 @@ pub struct ThumbnailSize {
 }
 
 impl ThumbnailSize {
-    pub const SMALL: Self = Self { width: 128, height: 128 };
-    pub const MEDIUM: Self = Self { width: 256, height: 256 };
-    pub const LARGE: Self = Self { width: 512, height: 512 };
+    pub const SMALL: Self = Self {
+        width: 128,
+        height: 128,
+    };
+    pub const MEDIUM: Self = Self {
+        width: 256,
+        height: 256,
+    };
+    pub const LARGE: Self = Self {
+        width: 512,
+        height: 512,
+    };
 }
 
 pub struct ThumbnailGenerator {
@@ -36,11 +45,7 @@ impl ThumbnailGenerator {
         Self { cache_dir }
     }
 
-    pub fn generate(
-        &self,
-        source: &Path,
-        size: ThumbnailSize,
-    ) -> Result<PathBuf, ThumbnailError> {
+    pub fn generate(&self, source: &Path, size: ThumbnailSize) -> Result<PathBuf, ThumbnailError> {
         let cache_key = self.cache_key(source, size);
         let cache_path = self.cache_dir.join(&cache_key);
 
@@ -91,8 +96,7 @@ impl ThumbnailGenerator {
         dest: &Path,
         size: ThumbnailSize,
     ) -> Result<(), ThumbnailError> {
-        let img = image::open(source)
-            .map_err(|e| ThumbnailError::ImageError(e.to_string()))?;
+        let img = image::open(source).map_err(|e| ThumbnailError::ImageError(e.to_string()))?;
 
         let thumbnail = img.thumbnail(size.width, size.height);
 
@@ -161,8 +165,8 @@ impl ThumbnailGenerator {
         use ffmpeg_next::software::scaling::{context::Context as ScalingContext, flag::Flags};
         use ffmpeg_next::util::frame::video::Video;
 
-        let mut ictx = input(&source)
-            .map_err(|e| ThumbnailError::GenerationError(e.to_string()))?;
+        let mut ictx =
+            input(&source).map_err(|e| ThumbnailError::GenerationError(e.to_string()))?;
 
         let input = ictx
             .streams()

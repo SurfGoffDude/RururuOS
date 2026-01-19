@@ -61,14 +61,9 @@ impl StoragePage {
                         Space::with_width(Length::Fill),
                     ]
                     .align_items(iced::Alignment::Center),
-
                     Space::with_height(Length::Fixed(8.0)),
-
-                    progress_bar(0.0..=1.0, usage)
-                        .height(Length::Fixed(8.0)),
-
+                    progress_bar(0.0..=1.0, usage).height(Length::Fixed(8.0)),
                     Space::with_height(Length::Fixed(4.0)),
-
                     row![
                         text(format!("{} GB used", used_gb)).size(11),
                         Space::with_width(Length::Fill),
@@ -89,52 +84,42 @@ impl StoragePage {
                     .on_press(Message::RefreshStorage),
             ]
             .align_items(iced::Alignment::Center),
-
             Space::with_height(Length::Fixed(16.0)),
-
             column(disk_items).spacing(16),
-
             Space::with_height(Length::Fixed(24.0)),
-
             // Storage breakdown
             text("Usage Breakdown").size(16),
             Space::with_height(Length::Fixed(8.0)),
-
             row![
                 text("🎬 Videos"),
                 Space::with_width(Length::Fill),
                 text("120 GB"),
             ]
             .padding(8),
-
             row![
                 text("🖼️ Images"),
                 Space::with_width(Length::Fill),
                 text("85 GB"),
             ]
             .padding(8),
-
             row![
                 text("🎵 Audio"),
                 Space::with_width(Length::Fill),
                 text("45 GB"),
             ]
             .padding(8),
-
             row![
                 text("🧊 3D Projects"),
                 Space::with_width(Length::Fill),
                 text("200 GB"),
             ]
             .padding(8),
-
             row![
                 text("📄 Documents"),
                 Space::with_width(Length::Fill),
                 text("15 GB"),
             ]
             .padding(8),
-
             row![
                 text("💻 Applications"),
                 Space::with_width(Length::Fill),

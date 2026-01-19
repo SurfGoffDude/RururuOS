@@ -1,16 +1,18 @@
-use rururu_workflows::{WorkflowConfig, WorkflowProfile, WorkflowType};
-use rururu_workflows::apps::{is_app_installed, install_app, launch_app, list_installed_creative_apps};
+use rururu_workflows::apps::{
+    install_app, is_app_installed, launch_app, list_installed_creative_apps,
+};
 use rururu_workflows::system::{apply_system_settings, get_system_info};
+use rururu_workflows::{WorkflowConfig, WorkflowProfile, WorkflowType};
 use std::env;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
-    
+
     if args.len() < 2 {
         print_usage();
         return;
     }
-    
+
     match args[1].as_str() {
         "list" => list_workflows(),
         "info" => {
@@ -59,7 +61,7 @@ fn print_usage() {
 fn list_workflows() {
     println!("Available Workflows:");
     println!();
-    
+
     for workflow_type in WorkflowType::all() {
         let profile = WorkflowProfile::get_profile(*workflow_type);
         println!("  {} - {}", workflow_type.name(), profile.description);
@@ -76,9 +78,9 @@ fn show_workflow_info(name: &str) {
         "dev" | "developer" => WorkflowType::Developer,
         _ => WorkflowType::General,
     };
-    
+
     let profile = WorkflowProfile::get_profile(workflow_type);
-    
+
     println!("Workflow: {}", profile.name);
     println!("Description: {}", profile.description);
     println!();
@@ -90,8 +92,14 @@ fn show_workflow_info(name: &str) {
     println!();
     println!("System Settings:");
     println!("  CPU Governor: {:?}", profile.system_settings.cpu_governor);
-    println!("  GPU Performance: {}", profile.system_settings.gpu_performance_mode);
-    println!("  Realtime Audio: {}", profile.system_settings.realtime_audio);
+    println!(
+        "  GPU Performance: {}",
+        profile.system_settings.gpu_performance_mode
+    );
+    println!(
+        "  Realtime Audio: {}",
+        profile.system_settings.realtime_audio
+    );
     println!();
     println!("Color Config:");
     println!("  Working Space: {}", profile.color_config.working_space);
@@ -110,22 +118,22 @@ fn activate_workflow(name: &str) {
         "dev" | "developer" => WorkflowType::Developer,
         _ => WorkflowType::General,
     };
-    
+
     let profile = WorkflowProfile::get_profile(workflow_type);
-    
+
     println!("Activating workflow: {}", profile.name);
-    
+
     // Apply system settings
     if let Err(e) = apply_system_settings(&profile.system_settings) {
         eprintln!("Warning: Failed to apply system settings: {}", e);
     }
-    
+
     // Set environment variables
     for (key, value) in &profile.environment {
         println!("  Setting {} = {}", key, value);
         env::set_var(key, value);
     }
-    
+
     // Set OCIO config if specified
     if let Some(ref ocio_path) = profile.color_config.ocio_config {
         if ocio_path.exists() {
@@ -133,7 +141,7 @@ fn activate_workflow(name: &str) {
             println!("  OCIO config: {}", ocio_path.display());
         }
     }
-    
+
     // Save config
     if let Ok(mut config) = WorkflowConfig::load() {
         config.set_active_workflow(workflow_type);
@@ -141,7 +149,7 @@ fn activate_workflow(name: &str) {
             eprintln!("Warning: Failed to save config: {}", e);
         }
     }
-    
+
     println!("Workflow activated successfully!");
 }
 
@@ -149,7 +157,7 @@ fn show_status() {
     match WorkflowConfig::load() {
         Ok(config) => {
             println!("Current Workflow: {}", config.active_workflow.name());
-            
+
             if let Some(profile) = config.get_active_profile() {
                 println!("Description: {}", profile.description);
                 println!();
@@ -169,10 +177,10 @@ fn show_status() {
 
 fn list_apps() {
     let apps = list_installed_creative_apps();
-    
+
     println!("Installed Creative Applications:");
     println!();
-    
+
     if apps.is_empty() {
         println!("  No creative applications found.");
     } else {
@@ -194,13 +202,13 @@ fn install_workflow_apps(name: &str) {
             return;
         }
     };
-    
+
     let profile = WorkflowProfile::get_profile(workflow_type);
     let config = WorkflowConfig::load().unwrap_or_default();
-    
+
     println!("Installing applications for: {}", profile.name);
     println!();
-    
+
     for app in &profile.applications {
         if is_app_installed(app) {
             println!("  ✓ {} already installed", app.name);
@@ -216,12 +224,15 @@ fn install_workflow_apps(name: &str) {
 
 fn show_system_info() {
     let info = get_system_info();
-    
+
     println!("System Information:");
     println!();
     println!("  CPU Cores: {}", info.cpu_count);
     println!("  Memory: {} GB", info.memory_total_gb);
     println!("  GPU: {}", info.gpu);
-    println!("  NVIDIA Driver: {}", if info.has_nvidia { "Yes" } else { "No" });
+    println!(
+        "  NVIDIA Driver: {}",
+        if info.has_nvidia { "Yes" } else { "No" }
+    );
     println!("  AMD GPU: {}", if info.has_amd { "Yes" } else { "No" });
 }

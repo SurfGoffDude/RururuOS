@@ -51,7 +51,6 @@ impl DisplaysPage {
             // Resolution
             text("Display").size(16),
             Space::with_height(Length::Fixed(8.0)),
-
             row![
                 text("Resolution"),
                 Space::with_width(Length::Fill),
@@ -63,7 +62,6 @@ impl DisplaysPage {
             ]
             .align_items(iced::Alignment::Center)
             .padding(8),
-
             row![
                 text("Refresh rate"),
                 Space::with_width(Length::Fill),
@@ -78,7 +76,6 @@ impl DisplaysPage {
             ]
             .align_items(iced::Alignment::Center)
             .padding(8),
-
             row![
                 text("Scale"),
                 Space::with_width(Length::Fill),
@@ -90,13 +87,10 @@ impl DisplaysPage {
             ]
             .align_items(iced::Alignment::Center)
             .padding(8),
-
             Space::with_height(Length::Fixed(24.0)),
-
             // Night Light
             text("Night Light").size(16),
             Space::with_height(Length::Fixed(8.0)),
-
             row![
                 text("Enable Night Light"),
                 Space::with_width(Length::Fill),
@@ -104,7 +98,6 @@ impl DisplaysPage {
             ]
             .align_items(iced::Alignment::Center)
             .padding(8),
-
             row![
                 text("Color temperature"),
                 Space::with_width(Length::Fill),
@@ -112,28 +105,26 @@ impl DisplaysPage {
             ]
             .align_items(iced::Alignment::Center)
             .padding(8),
-
             Space::with_height(Length::Fixed(24.0)),
-
             // Advanced
             text("Advanced").size(16),
             Space::with_height(Length::Fixed(8.0)),
-
             row![
                 text("Variable Refresh Rate (VRR)"),
                 Space::with_width(Length::Fill),
-                text(if self.vrr_enabled { "Enabled" } else { "Disabled" })
-                    .style(iced::theme::Text::Color(
-                        if self.vrr_enabled {
-                            iced::Color::from_rgb(0.6, 0.8, 0.6)
-                        } else {
-                            iced::Color::from_rgb(0.8, 0.6, 0.6)
-                        }
-                    )),
+                text(if self.vrr_enabled {
+                    "Enabled"
+                } else {
+                    "Disabled"
+                })
+                .style(iced::theme::Text::Color(if self.vrr_enabled {
+                    iced::Color::from_rgb(0.6, 0.8, 0.6)
+                } else {
+                    iced::Color::from_rgb(0.8, 0.6, 0.6)
+                })),
             ]
             .align_items(iced::Alignment::Center)
             .padding(8),
-
             row![
                 text("Color depth"),
                 Space::with_width(Length::Fill),

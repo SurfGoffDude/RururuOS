@@ -1,6 +1,6 @@
-use crate::{Result, WorkflowError};
 use crate::config::PackageManager;
 use crate::profiles::AppConfig;
+use crate::{Result, WorkflowError};
 use std::process::Command;
 
 pub fn is_app_installed(app: &AppConfig) -> bool {
@@ -13,7 +13,7 @@ pub fn is_app_installed(app: &AppConfig) -> bool {
     {
         return true;
     }
-    
+
     // Check flatpak
     if let Some(ref flatpak_id) = app.flatpak_id {
         if Command::new("flatpak")
@@ -25,7 +25,7 @@ pub fn is_app_installed(app: &AppConfig) -> bool {
             return true;
         }
     }
-    
+
     false
 }
 
@@ -35,12 +35,12 @@ pub fn install_app(app: &AppConfig, pm: PackageManager) -> Result<()> {
         let result = Command::new("flatpak")
             .args(["install", "-y", "flathub", flatpak_id])
             .status();
-        
+
         if result.map(|s| s.success()).unwrap_or(false) {
             return Ok(());
         }
     }
-    
+
     // Fall back to native package manager
     let (cmd, args) = match pm {
         PackageManager::Pacman => ("sudo", vec!["pacman", "-S", "--noconfirm", &app.package]),
@@ -55,11 +55,9 @@ pub fn install_app(app: &AppConfig, pm: PackageManager) -> Result<()> {
             }
         }
     };
-    
-    let status = Command::new(cmd)
-        .args(&args)
-        .status()?;
-    
+
+    let status = Command::new(cmd).args(&args).status()?;
+
     if status.success() {
         Ok(())
     } else {
@@ -83,7 +81,7 @@ pub fn launch_app(app: &AppConfig) -> Result<()> {
             .map_err(|e| WorkflowError::System(e.to_string()))?;
         return Ok(());
     }
-    
+
     // Try flatpak
     if let Some(ref flatpak_id) = app.flatpak_id {
         Command::new("flatpak")
@@ -92,23 +90,20 @@ pub fn launch_app(app: &AppConfig) -> Result<()> {
             .map_err(|e| WorkflowError::System(e.to_string()))?;
         return Ok(());
     }
-    
+
     Err(WorkflowError::AppNotFound(app.name.clone()))
 }
 
 pub fn get_app_version(app: &AppConfig) -> Option<String> {
     // Try --version
-    if let Ok(output) = Command::new(&app.executable)
-        .arg("--version")
-        .output()
-    {
+    if let Ok(output) = Command::new(&app.executable).arg("--version").output() {
         if output.status.success() {
             return String::from_utf8(output.stdout)
                 .ok()
                 .map(|s| s.lines().next().unwrap_or("").to_string());
         }
     }
-    
+
     None
 }
 
@@ -129,7 +124,7 @@ pub fn list_installed_creative_apps() -> Vec<String> {
         "freecad",
         "scribus",
     ];
-    
+
     apps.iter()
         .filter(|app| {
             Command::new("which")

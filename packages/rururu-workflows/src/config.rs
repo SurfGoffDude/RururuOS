@@ -36,12 +36,12 @@ pub enum PackageManager {
 impl Default for WorkflowConfig {
     fn default() -> Self {
         let mut profiles = HashMap::new();
-        
+
         for workflow_type in WorkflowType::all() {
             let profile = WorkflowProfile::get_profile(*workflow_type);
             profiles.insert(workflow_type.name().to_string(), profile);
         }
-        
+
         Self {
             version: 1,
             active_workflow: WorkflowType::General,
@@ -79,7 +79,7 @@ impl Default for WorkflowConfig {
 impl WorkflowConfig {
     pub fn load() -> Result<Self> {
         let config_path = Self::config_path();
-        
+
         if config_path.exists() {
             let content = std::fs::read_to_string(&config_path)?;
             toml::from_str(&content).map_err(|e| WorkflowError::Config(e.to_string()))
@@ -87,36 +87,36 @@ impl WorkflowConfig {
             Ok(Self::default())
         }
     }
-    
+
     pub fn save(&self) -> Result<()> {
         let config_path = Self::config_path();
-        
+
         if let Some(parent) = config_path.parent() {
             std::fs::create_dir_all(parent)?;
         }
-        
-        let content = toml::to_string_pretty(self)
-            .map_err(|e| WorkflowError::Config(e.to_string()))?;
-        
+
+        let content =
+            toml::to_string_pretty(self).map_err(|e| WorkflowError::Config(e.to_string()))?;
+
         std::fs::write(config_path, content)?;
         Ok(())
     }
-    
+
     fn config_path() -> PathBuf {
         dirs::config_dir()
             .unwrap_or_else(|| PathBuf::from("."))
             .join("rururu")
             .join("workflows.toml")
     }
-    
+
     pub fn get_active_profile(&self) -> Option<&WorkflowProfile> {
         self.profiles.get(self.active_workflow.name())
     }
-    
+
     pub fn set_active_workflow(&mut self, workflow: WorkflowType) {
         self.active_workflow = workflow;
     }
-    
+
     pub fn get_profile(&self, name: &str) -> Option<&WorkflowProfile> {
         self.profiles.get(name)
     }

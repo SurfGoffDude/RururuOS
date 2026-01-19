@@ -31,15 +31,14 @@ pub struct MetadataCache {
 impl MetadataCache {
     pub fn new(cache_dir: &Path, ttl: Duration) -> Result<Self, CacheError> {
         let db_path = cache_dir.join("metadata.sled");
-        let db = sled::open(&db_path)
-            .map_err(|e| CacheError::DatabaseError(e.to_string()))?;
+        let db = sled::open(&db_path).map_err(|e| CacheError::DatabaseError(e.to_string()))?;
 
         Ok(Self { db, ttl })
     }
 
     pub fn get(&self, path: &Path) -> Option<CachedMetadata> {
         let key = self.make_key(path);
-        
+
         match self.db.get(&key) {
             Ok(Some(data)) => {
                 match serde_json::from_slice::<CachedMetadata>(&data) {
@@ -64,7 +63,7 @@ impl MetadataCache {
                 warn!("Cache read error: {}", e);
             }
         }
-        
+
         None
     }
 
@@ -164,7 +163,7 @@ mod tests {
         let cache = MetadataCache::new(dir.path(), Duration::from_secs(3600)).unwrap();
 
         let test_path = PathBuf::from("/test/file.txt");
-        
+
         // Initially empty
         assert!(cache.get(&test_path).is_none());
 

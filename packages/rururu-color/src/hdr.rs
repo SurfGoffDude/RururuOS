@@ -1,5 +1,5 @@
-use crate::{ColorError, Result};
 use crate::monitor::{HdrCapability, MonitorProfile};
+use crate::{ColorError, Result};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone)]
@@ -47,8 +47,8 @@ pub struct ColorPrimaries {
 pub enum TransferFunction {
     Srgb,
     Bt1886,
-    Pq,       // Perceptual Quantizer (ST 2084)
-    Hlg,      // Hybrid Log-Gamma
+    Pq,  // Perceptual Quantizer (ST 2084)
+    Hlg, // Hybrid Log-Gamma
     Linear,
 }
 
@@ -66,7 +66,7 @@ impl ColorPrimaries {
             blue: (0.15, 0.06),
         }
     }
-    
+
     pub fn bt2020() -> Self {
         Self {
             red: (0.708, 0.292),
@@ -74,7 +74,7 @@ impl ColorPrimaries {
             blue: (0.131, 0.046),
         }
     }
-    
+
     pub fn dci_p3() -> Self {
         Self {
             red: (0.680, 0.320),
@@ -91,10 +91,10 @@ impl HdrSupport {
             monitors: Vec::new(),
         }
     }
-    
+
     pub fn detect() -> Result<Self> {
         let monitors = crate::monitor::detect_monitors()?;
-        
+
         let hdr_monitors: Vec<HdrMonitorState> = monitors
             .iter()
             .filter(|m| m.capabilities.hdr_support != HdrCapability::None)
@@ -105,66 +105,66 @@ impl HdrSupport {
                 metadata: None,
             })
             .collect();
-        
+
         let any_hdr = !hdr_monitors.is_empty();
-        
+
         Ok(Self {
             enabled: any_hdr,
             monitors: hdr_monitors,
         })
     }
-    
+
     pub fn enable_hdr(&mut self, monitor_name: &str) -> Result<()> {
         if let Some(monitor) = self.monitors.iter_mut().find(|m| m.name == monitor_name) {
             if monitor.capability == HdrCapability::None {
                 return Err(ColorError::HdrNotSupported);
             }
-            
+
             #[cfg(target_os = "linux")]
             {
                 // Enable HDR through KMS/DRM
                 // This requires compositor support (wlroots, KWin, etc.)
                 let _ = enable_hdr_drm(monitor_name);
             }
-            
+
             monitor.hdr_active = true;
             monitor.metadata = Some(default_hdr10_metadata());
-            
+
             Ok(())
         } else {
             Err(ColorError::MonitorNotFound(monitor_name.to_string()))
         }
     }
-    
+
     pub fn disable_hdr(&mut self, monitor_name: &str) -> Result<()> {
         if let Some(monitor) = self.monitors.iter_mut().find(|m| m.name == monitor_name) {
             #[cfg(target_os = "linux")]
             {
                 let _ = disable_hdr_drm(monitor_name);
             }
-            
+
             monitor.hdr_active = false;
             monitor.metadata = None;
-            
+
             Ok(())
         } else {
             Err(ColorError::MonitorNotFound(monitor_name.to_string()))
         }
     }
-    
+
     pub fn set_hdr_metadata(&mut self, monitor_name: &str, metadata: HdrMetadata) -> Result<()> {
         if let Some(monitor) = self.monitors.iter_mut().find(|m| m.name == monitor_name) {
             if !monitor.hdr_active {
                 return Err(ColorError::HdrNotSupported);
             }
-            
+
             monitor.metadata = Some(metadata);
             Ok(())
         } else {
             Err(ColorError::MonitorNotFound(monitor_name.to_string()))
         }
     }
-    
+
     pub fn is_hdr_active(&self, monitor_name: &str) -> bool {
         self.monitors
             .iter()
@@ -204,11 +204,7 @@ fn disable_hdr_drm(_monitor: &str) -> Result<()> {
     Ok(())
 }
 
-pub fn tone_map_pq_to_sdr(
-    value: f32,
-    max_content_luminance: f32,
-    target_luminance: f32,
-) -> f32 {
+pub fn tone_map_pq_to_sdr(value: f32, max_content_luminance: f32, target_luminance: f32) -> f32 {
     // Simple Reinhard tone mapping
     let normalized = value / max_content_luminance;
     let mapped = normalized / (1.0 + normalized);
@@ -222,11 +218,11 @@ pub fn pq_eotf(value: f32) -> f32 {
     let c1 = 0.8359375;
     let c2 = 18.8515625;
     let c3 = 18.6875;
-    
+
     let v_pow_1_m2 = value.powf(1.0 / m2);
     let numerator = (v_pow_1_m2 - c1).max(0.0);
     let denominator = c2 - c3 * v_pow_1_m2;
-    
+
     10000.0 * (numerator / denominator).powf(1.0 / m1)
 }
 
@@ -237,9 +233,9 @@ pub fn pq_oetf(luminance: f32) -> f32 {
     let c1 = 0.8359375;
     let c2 = 18.8515625;
     let c3 = 18.6875;
-    
+
     let y = (luminance / 10000.0).max(0.0);
     let y_pow_m1 = y.powf(m1);
-    
+
     ((c1 + c2 * y_pow_m1) / (1.0 + c3 * y_pow_m1)).powf(m2)
 }

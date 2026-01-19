@@ -23,51 +23,57 @@ impl NetworkPage {
     }
 
     pub fn view(&self) -> Element<Message> {
-        let network_items: Vec<Element<Message>> = self
-            .available_networks
-            .iter()
-            .map(|(name, signal, secured)| {
-                let is_connected = self.connected_network.as_ref() == Some(name);
-                let signal_icon = match signal {
-                    80..=100 => "📶",
-                    50..=79 => "📶",
-                    20..=49 => "📶",
-                    _ => "📶",
-                };
+        let network_items: Vec<Element<Message>> =
+            self.available_networks
+                .iter()
+                .map(|(name, signal, secured)| {
+                    let is_connected = self.connected_network.as_ref() == Some(name);
+                    let signal_icon = match signal {
+                        80..=100 => "📶",
+                        50..=79 => "📶",
+                        20..=49 => "📶",
+                        _ => "📶",
+                    };
 
-                row![
-                    text(signal_icon),
-                    Space::with_width(Length::Fixed(8.0)),
-                    column![
-                        text(name).size(14),
-                        text(if is_connected { "Connected" } else { if *secured { "Secured" } else { "Open" } })
-                            .size(11)
-                            .style(iced::theme::Text::Color(
-                                if is_connected {
-                                    iced::Color::from_rgb(0.6, 0.8, 0.6)
+                    row![
+                        text(signal_icon),
+                        Space::with_width(Length::Fixed(8.0)),
+                        column![
+                            text(name).size(14),
+                            text(if is_connected {
+                                "Connected"
+                            } else {
+                                if *secured {
+                                    "Secured"
                                 } else {
-                                    iced::Color::from_rgb(0.6, 0.6, 0.6)
+                                    "Open"
                                 }
-                            )),
-                    ],
-                    Space::with_width(Length::Fill),
-                    if *secured { text("🔒") } else { text("") },
-                    Space::with_width(Length::Fixed(8.0)),
-                    if is_connected {
-                        button(text("Disconnect"))
-                            .style(iced::theme::Button::Secondary)
-                            .on_press(Message::WifiConnect(String::new()))
-                    } else {
-                        button(text("Connect"))
-                            .style(iced::theme::Button::Primary)
-                            .on_press(Message::WifiConnect(name.clone()))
-                    },
-                ]
-                .align_items(iced::Alignment::Center)
-                .padding(8)
-                .into()
-            })
-            .collect();
+                            })
+                            .size(11)
+                            .style(iced::theme::Text::Color(if is_connected {
+                                iced::Color::from_rgb(0.6, 0.8, 0.6)
+                            } else {
+                                iced::Color::from_rgb(0.6, 0.6, 0.6)
+                            })),
+                        ],
+                        Space::with_width(Length::Fill),
+                        if *secured { text("🔒") } else { text("") },
+                        Space::with_width(Length::Fixed(8.0)),
+                        if is_connected {
+                            button(text("Disconnect"))
+                                .style(iced::theme::Button::Secondary)
+                                .on_press(Message::WifiConnect(String::new()))
+                        } else {
+                            button(text("Connect"))
+                                .style(iced::theme::Button::Primary)
+                                .on_press(Message::WifiConnect(name.clone()))
+                        },
+                    ]
+                    .align_items(iced::Alignment::Center)
+                    .padding(8)
+                    .into()
+                })
+                .collect();
 
         column![
             // WiFi toggle
@@ -78,20 +84,15 @@ impl NetworkPage {
             ]
             .align_items(iced::Alignment::Center)
             .padding(8),
-
             Space::with_height(Length::Fixed(16.0)),
-
             // Networks list
             text("Available Networks").size(16),
             Space::with_height(Length::Fixed(8.0)),
             column(network_items).spacing(4),
-
             Space::with_height(Length::Fixed(24.0)),
-
             // Wired connection
             text("Wired").size(16),
             Space::with_height(Length::Fixed(8.0)),
-
             row![
                 text("🔌"),
                 Space::with_width(Length::Fixed(8.0)),

@@ -25,13 +25,10 @@ impl Toolbar {
         ]
         .spacing(4);
 
-        let path_bar = container(
-            text(app.current_path.to_string_lossy())
-                .size(14)
-        )
-        .padding(8)
-        .style(iced::theme::Container::Box)
-        .width(Length::Fill);
+        let path_bar = container(text(app.current_path.to_string_lossy()).size(14))
+            .padding(8)
+            .style(iced::theme::Container::Box)
+            .width(Length::Fill);
 
         let search = text_input("Search...", &app.search_query)
             .on_input(Message::SearchChanged)
@@ -57,12 +54,20 @@ impl Toolbar {
         .spacing(4);
 
         let options = row![
-            button(if app.show_hidden { text("👁") } else { text("👁‍🗨") })
-                .on_press(Message::ToggleHiddenFiles)
-                .style(iced::theme::Button::Secondary),
-            button(if app.show_preview { text("◧") } else { text("▢") })
-                .on_press(Message::TogglePreview)
-                .style(iced::theme::Button::Secondary),
+            button(if app.show_hidden {
+                text("👁")
+            } else {
+                text("👁‍🗨")
+            })
+            .on_press(Message::ToggleHiddenFiles)
+            .style(iced::theme::Button::Secondary),
+            button(if app.show_preview {
+                text("◧")
+            } else {
+                text("▢")
+            })
+            .on_press(Message::TogglePreview)
+            .style(iced::theme::Button::Secondary),
         ]
         .spacing(4);
 

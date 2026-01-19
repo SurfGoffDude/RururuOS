@@ -1,7 +1,7 @@
-use iced::widget::{column, container, row, scrollable, text, button, progress_bar, Space};
-use iced::{Application, Command, Element, Length, Settings, Theme, Subscription};
-use sysinfo::{System, Pid, ProcessStatus};
+use iced::widget::{button, column, container, progress_bar, row, scrollable, text, Space};
+use iced::{Application, Command, Element, Length, Settings, Subscription, Theme};
 use std::time::Duration;
+use sysinfo::{Pid, ProcessStatus, System};
 
 fn main() -> iced::Result {
     MonitorApp::run(Settings {
@@ -103,7 +103,8 @@ impl Application for MonitorApp {
 
                 // Update history
                 let cpu = self.system.global_cpu_usage();
-                let mem = self.system.used_memory() as f32 / self.system.total_memory() as f32 * 100.0;
+                let mem =
+                    self.system.used_memory() as f32 / self.system.total_memory() as f32 * 100.0;
 
                 self.cpu_history.push(cpu);
                 self.memory_history.push(mem);
@@ -164,17 +165,10 @@ impl Application for MonitorApp {
             Tab::Resources => self.view_resources(),
         };
 
-        container(
-            column![
-                tabs,
-                Space::with_height(Length::Fixed(16.0)),
-                content,
-            ]
-            .padding(16),
-        )
-        .width(Length::Fill)
-        .height(Length::Fill)
-        .into()
+        container(column![tabs, Space::with_height(Length::Fixed(16.0)), content,].padding(16))
+            .width(Length::Fill)
+            .height(Length::Fill)
+            .into()
     }
 
     fn subscription(&self) -> Subscription<Message> {
@@ -254,9 +248,7 @@ impl MonitorApp {
             ]
             .align_items(iced::Alignment::Center)
             .padding(8),
-
             Space::with_height(Length::Fixed(16.0)),
-
             // Memory
             text("Memory").size(18),
             row![
@@ -272,9 +264,7 @@ impl MonitorApp {
                 mem_total as f64 / 1024.0 / 1024.0 / 1024.0
             ))
             .size(12),
-
             Space::with_height(Length::Fixed(16.0)),
-
             // Swap
             text("Swap").size(18),
             row![
@@ -284,9 +274,7 @@ impl MonitorApp {
             ]
             .align_items(iced::Alignment::Center)
             .padding(8),
-
             Space::with_height(Length::Fixed(16.0)),
-
             // Stats
             text("System").size(18),
             row![
@@ -295,7 +283,6 @@ impl MonitorApp {
                 text(format!("{}", process_count)),
             ]
             .padding(8),
-
             row![
                 text("Uptime:"),
                 Space::with_width(Length::Fixed(8.0)),
@@ -339,10 +326,16 @@ impl MonitorApp {
                 let mem_mb = p.memory as f64 / 1024.0 / 1024.0;
 
                 let row_content = row![
-                    text(format!("{}", p.pid)).size(12).width(Length::Fixed(70.0)),
+                    text(format!("{}", p.pid))
+                        .size(12)
+                        .width(Length::Fixed(70.0)),
                     text(&p.name).size(12).width(Length::FillPortion(3)),
-                    text(format!("{:.1}", p.cpu)).size(12).width(Length::Fixed(80.0)),
-                    text(format!("{:.1} MB", mem_mb)).size(12).width(Length::Fixed(100.0)),
+                    text(format!("{:.1}", p.cpu))
+                        .size(12)
+                        .width(Length::Fixed(80.0)),
+                    text(format!("{:.1} MB", mem_mb))
+                        .size(12)
+                        .width(Length::Fixed(100.0)),
                     text(&p.status).size(12).width(Length::Fixed(80.0)),
                 ]
                 .spacing(8)
@@ -373,11 +366,9 @@ impl MonitorApp {
                     .on_press(Message::RefreshProcesses),
             ]
         } else {
-            row![
-                button(text("Refresh"))
-                    .style(iced::theme::Button::Secondary)
-                    .on_press(Message::RefreshProcesses),
-            ]
+            row![button(text("Refresh"))
+                .style(iced::theme::Button::Secondary)
+                .on_press(Message::RefreshProcesses),]
         };
 
         column![
@@ -398,7 +389,9 @@ impl MonitorApp {
             .enumerate()
             .map(|(i, cpu)| {
                 row![
-                    text(format!("CPU {}", i)).size(12).width(Length::Fixed(60.0)),
+                    text(format!("CPU {}", i))
+                        .size(12)
+                        .width(Length::Fixed(60.0)),
                     progress_bar(0.0..=100.0, cpu.cpu_usage())
                         .height(Length::Fixed(12.0))
                         .width(Length::Fill),
@@ -416,9 +409,7 @@ impl MonitorApp {
             text("CPU Cores").size(18),
             Space::with_height(Length::Fixed(8.0)),
             column(cpu_items).spacing(4),
-
             Space::with_height(Length::Fixed(24.0)),
-
             text("Disks").size(18),
             Space::with_height(Length::Fixed(8.0)),
             self.view_disks(),

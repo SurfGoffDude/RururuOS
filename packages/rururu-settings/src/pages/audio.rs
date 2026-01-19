@@ -49,7 +49,6 @@ impl AudioPage {
             // Output section
             text("Output").size(16),
             Space::with_height(Length::Fixed(8.0)),
-
             row![
                 text("Output device"),
                 Space::with_width(Length::Fill),
@@ -61,24 +60,24 @@ impl AudioPage {
             ]
             .align_items(iced::Alignment::Center)
             .padding(8),
-
             row![
                 text("🔊"),
                 Space::with_width(Length::Fixed(8.0)),
-                slider(0.0..=100.0, self.output_volume, Message::OutputVolumeChanged)
-                    .width(Length::Fill),
+                slider(
+                    0.0..=100.0,
+                    self.output_volume,
+                    Message::OutputVolumeChanged
+                )
+                .width(Length::Fill),
                 Space::with_width(Length::Fixed(8.0)),
                 text(format!("{}%", self.output_volume as u32)).width(Length::Fixed(50.0)),
             ]
             .align_items(iced::Alignment::Center)
             .padding(8),
-
             Space::with_height(Length::Fixed(24.0)),
-
             // Input section
             text("Input").size(16),
             Space::with_height(Length::Fixed(8.0)),
-
             row![
                 text("Input device"),
                 Space::with_width(Length::Fill),
@@ -90,7 +89,6 @@ impl AudioPage {
             ]
             .align_items(iced::Alignment::Center)
             .padding(8),
-
             row![
                 text("🎤"),
                 Space::with_width(Length::Fixed(8.0)),
@@ -101,29 +99,24 @@ impl AudioPage {
             ]
             .align_items(iced::Alignment::Center)
             .padding(8),
-
             Space::with_height(Length::Fixed(24.0)),
-
             // PipeWire info
             text("Audio System").size(16),
             Space::with_height(Length::Fixed(8.0)),
-            
             row![
                 text("Audio server"),
                 Space::with_width(Length::Fill),
-                text("PipeWire").style(iced::theme::Text::Color(
-                    iced::Color::from_rgb(0.6, 0.8, 0.6)
-                )),
+                text("PipeWire").style(iced::theme::Text::Color(iced::Color::from_rgb(
+                    0.6, 0.8, 0.6
+                ))),
             ]
             .padding(8),
-
             row![
                 text("Sample rate"),
                 Space::with_width(Length::Fill),
                 text("48000 Hz"),
             ]
             .padding(8),
-
             row![
                 text("Buffer size"),
                 Space::with_width(Length::Fill),

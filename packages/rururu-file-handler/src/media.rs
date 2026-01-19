@@ -71,8 +71,8 @@ impl MediaHandler {
         use ffmpeg_next::format::context::Input;
         use ffmpeg_next::media::Type;
 
-        let context = ffmpeg_next::format::input(&path)
-            .map_err(|e| MediaError::OpenError(e.to_string()))?;
+        let context =
+            ffmpeg_next::format::input(&path).map_err(|e| MediaError::OpenError(e.to_string()))?;
 
         let mut video_info = None;
         let mut audio_info = None;
@@ -80,10 +80,9 @@ impl MediaHandler {
         for stream in context.streams() {
             match stream.parameters().medium() {
                 Type::Video => {
-                    let decoder = ffmpeg_next::codec::context::Context::from_parameters(
-                        stream.parameters(),
-                    )
-                    .map_err(|e| MediaError::MetadataError(e.to_string()))?;
+                    let decoder =
+                        ffmpeg_next::codec::context::Context::from_parameters(stream.parameters())
+                            .map_err(|e| MediaError::MetadataError(e.to_string()))?;
 
                     if let Ok(video) = decoder.decoder().video() {
                         video_info = Some(VideoInfo {
@@ -96,23 +95,18 @@ impl MediaHandler {
                                         / time_base.denominator() as f64,
                                 )
                             }),
-                            frame_rate: stream.avg_frame_rate().map(|r| {
-                                r.numerator() as f64 / r.denominator() as f64
-                            }),
-                            codec: stream
-                                .parameters()
-                                .id()
-                                .name()
-                                .map(String::from),
+                            frame_rate: stream
+                                .avg_frame_rate()
+                                .map(|r| r.numerator() as f64 / r.denominator() as f64),
+                            codec: stream.parameters().id().name().map(String::from),
                             bitrate: Some(stream.parameters().bit_rate() as u64),
                         });
                     }
                 }
                 Type::Audio => {
-                    let decoder = ffmpeg_next::codec::context::Context::from_parameters(
-                        stream.parameters(),
-                    )
-                    .map_err(|e| MediaError::MetadataError(e.to_string()))?;
+                    let decoder =
+                        ffmpeg_next::codec::context::Context::from_parameters(stream.parameters())
+                            .map_err(|e| MediaError::MetadataError(e.to_string()))?;
 
                     if let Ok(audio) = decoder.decoder().audio() {
                         audio_info = Some(AudioInfo {
@@ -125,11 +119,7 @@ impl MediaHandler {
                                         / time_base.denominator() as f64,
                                 )
                             }),
-                            codec: stream
-                                .parameters()
-                                .id()
-                                .name()
-                                .map(String::from),
+                            codec: stream.parameters().id().name().map(String::from),
                             bitrate: Some(stream.parameters().bit_rate() as u64),
                         });
                     }
@@ -139,7 +129,7 @@ impl MediaHandler {
         }
 
         let metadata = context.metadata();
-        
+
         Ok(MediaInfo {
             video: video_info,
             audio: audio_info,
@@ -180,11 +170,11 @@ impl MediaHandler {
     }
 
     fn get_mp3_info(&self, path: &Path) -> Result<AudioInfo, MediaError> {
-        let tag = id3::Tag::read_from_path(path)
-            .map_err(|e| MediaError::MetadataError(e.to_string()))?;
+        let tag =
+            id3::Tag::read_from_path(path).map_err(|e| MediaError::MetadataError(e.to_string()))?;
 
         Ok(AudioInfo {
-            channels: 2, // MP3 is typically stereo
+            channels: 2,        // MP3 is typically stereo
             sample_rate: 44100, // Common default
             duration: tag.duration().map(Duration::from_secs),
             codec: Some("MP3".to_string()),

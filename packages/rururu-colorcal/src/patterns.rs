@@ -31,12 +31,18 @@ impl TestPattern {
 
     pub fn description(&self) -> &'static str {
         match self {
-            TestPattern::ColorBars => "Standard color bars for checking color reproduction and saturation.",
+            TestPattern::ColorBars => {
+                "Standard color bars for checking color reproduction and saturation."
+            }
             TestPattern::Gradient => "Smooth gradient to check for banding and color transitions.",
             TestPattern::BlackLevel => "Black level test - adjust brightness until barely visible.",
-            TestPattern::WhiteLevel => "White level test - adjust contrast for visible distinctions.",
+            TestPattern::WhiteLevel => {
+                "White level test - adjust contrast for visible distinctions."
+            }
             TestPattern::Gamma => "Gamma calibration pattern - should appear uniform at distance.",
-            TestPattern::WhiteBalance => "White balance test - pure white should have no color cast.",
+            TestPattern::WhiteBalance => {
+                "White balance test - pure white should have no color cast."
+            }
             TestPattern::Resolution => "Resolution test pattern for checking sharpness.",
             TestPattern::DeadPixel => "Dead pixel test - solid colors to find stuck pixels.",
         }
@@ -223,16 +229,12 @@ fn view_resolution<'a>() -> Element<'a, Message> {
         text("Resolution Test").size(14),
         text("Lines should be crisp and distinguishable").size(11),
         Space::with_height(Length::Fixed(8.0)),
-        container(
-            text("|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||").size(8),
-        )
-        .width(Length::Fill)
-        .center_x(),
-        container(
-            text("=====================================").size(8),
-        )
-        .width(Length::Fill)
-        .center_x(),
+        container(text("|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||").size(8),)
+            .width(Length::Fill)
+            .center_x(),
+        container(text("=====================================").size(8),)
+            .width(Length::Fill)
+            .center_x(),
     ]
     .spacing(4)
     .into()

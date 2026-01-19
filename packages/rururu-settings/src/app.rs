@@ -1,7 +1,6 @@
 use crate::pages::{
-    appearance::AppearancePage, audio::AudioPage, displays::DisplaysPage,
-    keyboard::KeyboardPage, network::NetworkPage, power::PowerPage,
-    storage::StoragePage, about::AboutPage,
+    about::AboutPage, appearance::AppearancePage, audio::AudioPage, displays::DisplaysPage,
+    keyboard::KeyboardPage, network::NetworkPage, power::PowerPage, storage::StoragePage,
 };
 use iced::widget::{button, column, container, row, scrollable, text, Space};
 use iced::{Application, Command, Element, Length, Theme};
@@ -177,9 +176,7 @@ impl Application for SettingsApp {
         let sidebar = self.sidebar();
         let content = self.content();
 
-        row![sidebar, content]
-            .spacing(0)
-            .into()
+        row![sidebar, content].spacing(0).into()
     }
 
     fn theme(&self) -> Theme {

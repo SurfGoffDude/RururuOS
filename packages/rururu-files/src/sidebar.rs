@@ -6,10 +6,7 @@ use std::path::PathBuf;
 pub struct Sidebar;
 
 impl Sidebar {
-    pub fn view<'a>(
-        bookmarks: &'a [PathBuf],
-        current_path: &'a PathBuf,
-    ) -> Element<'a, Message> {
+    pub fn view<'a>(bookmarks: &'a [PathBuf], current_path: &'a PathBuf) -> Element<'a, Message> {
         let mut items: Vec<Element<Message>> = Vec::new();
 
         // Places header
@@ -99,7 +96,7 @@ impl Sidebar {
                         .file_name()
                         .and_then(|n| n.to_str())
                         .unwrap_or("Unknown");
-                    
+
                     let is_current = bookmark == current_path;
                     let path_clone = bookmark.clone();
 

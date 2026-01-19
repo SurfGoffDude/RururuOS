@@ -90,7 +90,7 @@ impl WhitePoint {
             y: 0.3290,
         }
     }
-    
+
     pub fn d50() -> Self {
         Self {
             temperature: 5000,
@@ -98,7 +98,7 @@ impl WhitePoint {
             y: 0.3585,
         }
     }
-    
+
     pub fn d93() -> Self {
         Self {
             temperature: 9300,
@@ -110,29 +110,29 @@ impl WhitePoint {
 
 pub fn detect_monitors() -> Result<Vec<MonitorProfile>> {
     let mut monitors = Vec::new();
-    
+
     #[cfg(target_os = "linux")]
     {
         // Try to read from /sys/class/drm
         let drm_path = std::path::Path::new("/sys/class/drm");
-        
+
         if drm_path.exists() {
             if let Ok(entries) = std::fs::read_dir(drm_path) {
                 for entry in entries.flatten() {
                     let name = entry.file_name().to_string_lossy().to_string();
-                    
+
                     // Skip non-connector entries
                     if !name.starts_with("card") || !name.contains('-') {
                         continue;
                     }
-                    
+
                     let status_path = entry.path().join("status");
                     if let Ok(status) = std::fs::read_to_string(&status_path) {
                         if status.trim() != "connected" {
                             continue;
                         }
                     }
-                    
+
                     // Read EDID
                     let edid_path = entry.path().join("edid");
                     let edid = if edid_path.exists() {
@@ -140,7 +140,7 @@ pub fn detect_monitors() -> Result<Vec<MonitorProfile>> {
                     } else {
                         default_edid(&name)
                     };
-                    
+
                     monitors.push(MonitorProfile {
                         name: name.clone(),
                         edid,
@@ -152,7 +152,7 @@ pub fn detect_monitors() -> Result<Vec<MonitorProfile>> {
             }
         }
     }
-    
+
     // If no monitors found, return a placeholder
     if monitors.is_empty() {
         monitors.push(MonitorProfile {
@@ -178,31 +178,31 @@ pub fn detect_monitors() -> Result<Vec<MonitorProfile>> {
             icc_profile: None,
         });
     }
-    
+
     Ok(monitors)
 }
 
 fn parse_edid(path: &std::path::Path) -> Result<EdidInfo> {
     let data = std::fs::read(path)?;
-    
+
     if data.len() < 128 {
         return Err(ColorError::IccError("EDID too small".to_string()));
     }
-    
+
     // Parse EDID header
     let manufacturer_id = ((data[8] as u16) << 8) | (data[9] as u16);
     let manufacturer = decode_manufacturer_id(manufacturer_id);
-    
+
     let year = 1990 + data[17] as u16;
-    
+
     // Resolution from detailed timing descriptor
     let h_active = ((data[58] as u32 & 0xF0) << 4) | data[56] as u32;
     let v_active = ((data[61] as u32 & 0xF0) << 4) | data[59] as u32;
-    
+
     // Physical size
     let h_size = ((data[68] as u32 & 0xF0) << 4) | data[66] as u32;
     let v_size = ((data[68] as u32 & 0x0F) << 8) | data[67] as u32;
-    
+
     Ok(EdidInfo {
         manufacturer,
         model: "Monitor".to_string(),
@@ -221,7 +221,7 @@ fn decode_manufacturer_id(id: u16) -> String {
     let c1 = ((id >> 10) & 0x1F) as u8 + b'A' - 1;
     let c2 = ((id >> 5) & 0x1F) as u8 + b'A' - 1;
     let c3 = (id & 0x1F) as u8 + b'A' - 1;
-    
+
     format!("{}{}{}", c1 as char, c2 as char, c3 as char)
 }
 

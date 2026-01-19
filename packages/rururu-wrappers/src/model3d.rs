@@ -78,7 +78,8 @@ impl Model3D {
         debug!("Loading 3D model: {:?}", path);
 
         let scene = Scene::from_file(
-            path.to_str().ok_or_else(|| Model3DError::LoadError("Invalid path".into()))?,
+            path.to_str()
+                .ok_or_else(|| Model3DError::LoadError("Invalid path".into()))?,
             vec![
                 PostProcess::Triangulate,
                 PostProcess::GenerateNormals,

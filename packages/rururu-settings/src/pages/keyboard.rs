@@ -14,12 +14,36 @@ impl KeyboardPage {
             layouts: vec!["US".to_string(), "RU".to_string()],
             current_layout: "US".to_string(),
             shortcuts: vec![
-                ("Terminal".to_string(), "Super+Return".to_string(), "Open terminal".to_string()),
-                ("Files".to_string(), "Super+N".to_string(), "Open file manager".to_string()),
-                ("GIMP".to_string(), "Super+G".to_string(), "Open GIMP".to_string()),
-                ("Blender".to_string(), "Super+Shift+B".to_string(), "Open Blender".to_string()),
-                ("Screenshot".to_string(), "Print".to_string(), "Take screenshot".to_string()),
-                ("Area Screenshot".to_string(), "Super+Shift+Print".to_string(), "Area screenshot".to_string()),
+                (
+                    "Terminal".to_string(),
+                    "Super+Return".to_string(),
+                    "Open terminal".to_string(),
+                ),
+                (
+                    "Files".to_string(),
+                    "Super+N".to_string(),
+                    "Open file manager".to_string(),
+                ),
+                (
+                    "GIMP".to_string(),
+                    "Super+G".to_string(),
+                    "Open GIMP".to_string(),
+                ),
+                (
+                    "Blender".to_string(),
+                    "Super+Shift+B".to_string(),
+                    "Open Blender".to_string(),
+                ),
+                (
+                    "Screenshot".to_string(),
+                    "Print".to_string(),
+                    "Take screenshot".to_string(),
+                ),
+                (
+                    "Area Screenshot".to_string(),
+                    "Super+Shift+Print".to_string(),
+                    "Area screenshot".to_string(),
+                ),
             ],
         }
     }
@@ -47,14 +71,12 @@ impl KeyboardPage {
             .iter()
             .map(|(name, keys, action)| {
                 row![
-                    column![
-                        text(name).size(14),
-                        text(action).size(11),
-                    ]
-                    .width(Length::FillPortion(2)),
+                    column![text(name).size(14), text(action).size(11),]
+                        .width(Length::FillPortion(2)),
                     Space::with_width(Length::Fill),
-                    text(keys)
-                        .style(iced::theme::Text::Color(iced::Color::from_rgb(0.5, 0.7, 0.9))),
+                    text(keys).style(iced::theme::Text::Color(iced::Color::from_rgb(
+                        0.5, 0.7, 0.9
+                    ))),
                 ]
                 .align_items(iced::Alignment::Center)
                 .padding(8)
@@ -71,41 +93,33 @@ impl KeyboardPage {
             button(text("+ Add Layout"))
                 .style(iced::theme::Button::Secondary)
                 .on_press(Message::LayoutAdded("DE".to_string())),
-
             Space::with_height(Length::Fixed(24.0)),
-
             // Shortcuts section
             text("Creative Shortcuts").size(16),
             Space::with_height(Length::Fixed(8.0)),
             column(shortcut_items).spacing(4),
-
             Space::with_height(Length::Fixed(24.0)),
-
             // Options
             text("Options").size(16),
             Space::with_height(Length::Fixed(8.0)),
-
             row![
                 text("Switch layout"),
                 Space::with_width(Length::Fill),
                 text("Alt+Shift"),
             ]
             .padding(8),
-
             row![
                 text("Caps Lock behavior"),
                 Space::with_width(Length::Fill),
                 text("Escape"),
             ]
             .padding(8),
-
             row![
                 text("Key repeat delay"),
                 Space::with_width(Length::Fill),
                 text("200ms"),
             ]
             .padding(8),
-
             row![
                 text("Key repeat rate"),
                 Space::with_width(Length::Fill),

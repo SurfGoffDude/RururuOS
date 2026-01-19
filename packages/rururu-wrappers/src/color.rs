@@ -274,7 +274,9 @@ mod tests {
     fn test_transform_same_space() {
         let cm = ColorManager::new();
         let rgb = [0.5, 0.3, 0.8];
-        let result = cm.transform_rgb(rgb, ColorSpace::SRGB, ColorSpace::SRGB).unwrap();
+        let result = cm
+            .transform_rgb(rgb, ColorSpace::SRGB, ColorSpace::SRGB)
+            .unwrap();
         assert_eq!(rgb, result);
     }
 }

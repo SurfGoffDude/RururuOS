@@ -25,7 +25,7 @@ impl WorkflowType {
             WorkflowType::General,
         ]
     }
-    
+
     pub fn name(&self) -> &'static str {
         match self {
             WorkflowType::VideoEditor => "Video Editor",
@@ -37,7 +37,7 @@ impl WorkflowType {
             WorkflowType::General => "General",
         }
     }
-    
+
     pub fn icon(&self) -> &'static str {
         match self {
             WorkflowType::VideoEditor => "video-x-generic",
@@ -181,20 +181,21 @@ impl WorkflowProfile {
                 soft_proof_profile: None,
                 default_intent: "RelativeColorimetric".to_string(),
             },
-            keyboard_shortcuts: vec![
-                KeyboardShortcut {
-                    action: "Launch DaVinci Resolve".to_string(),
-                    keys: "Super+Shift+V".to_string(),
-                    description: "Open video editor".to_string(),
-                },
-            ],
+            keyboard_shortcuts: vec![KeyboardShortcut {
+                action: "Launch DaVinci Resolve".to_string(),
+                keys: "Super+Shift+V".to_string(),
+                description: "Open video editor".to_string(),
+            }],
             startup_apps: vec![],
-            environment: [
-                ("RESOLVE_SCRIPT_API".to_string(), "/opt/resolve/libs/Fusion/".to_string()),
-            ].into_iter().collect(),
+            environment: [(
+                "RESOLVE_SCRIPT_API".to_string(),
+                "/opt/resolve/libs/Fusion/".to_string(),
+            )]
+            .into_iter()
+            .collect(),
         }
     }
-    
+
     pub fn three_d_artist() -> Self {
         Self {
             workflow_type: WorkflowType::ThreeDArtist,
@@ -208,9 +209,9 @@ impl WorkflowProfile {
                     flatpak_id: Some("org.blender.Blender".to_string()),
                     config_path: Some(PathBuf::from("~/.config/blender")),
                     priority: AppPriority::Primary,
-                    settings: [
-                        ("cycles.device".to_string(), "GPU".to_string()),
-                    ].into_iter().collect(),
+                    settings: [("cycles.device".to_string(), "GPU".to_string())]
+                        .into_iter()
+                        .collect(),
                 },
                 AppConfig {
                     name: "FreeCAD".to_string(),
@@ -237,21 +238,27 @@ impl WorkflowProfile {
                 soft_proof_profile: None,
                 default_intent: "RelativeColorimetric".to_string(),
             },
-            keyboard_shortcuts: vec![
-                KeyboardShortcut {
-                    action: "Launch Blender".to_string(),
-                    keys: "Super+Shift+B".to_string(),
-                    description: "Open 3D software".to_string(),
-                },
-            ],
+            keyboard_shortcuts: vec![KeyboardShortcut {
+                action: "Launch Blender".to_string(),
+                keys: "Super+Shift+B".to_string(),
+                description: "Open 3D software".to_string(),
+            }],
             startup_apps: vec![],
             environment: [
-                ("BLENDER_USER_CONFIG".to_string(), "~/.config/blender".to_string()),
-                ("CYCLES_CUDA_EXTRA_CFLAGS".to_string(), "-ccbin=/usr/bin/gcc".to_string()),
-            ].into_iter().collect(),
+                (
+                    "BLENDER_USER_CONFIG".to_string(),
+                    "~/.config/blender".to_string(),
+                ),
+                (
+                    "CYCLES_CUDA_EXTRA_CFLAGS".to_string(),
+                    "-ccbin=/usr/bin/gcc".to_string(),
+                ),
+            ]
+            .into_iter()
+            .collect(),
         }
     }
-    
+
     pub fn two_d_designer() -> Self {
         Self {
             workflow_type: WorkflowType::TwoDDesigner,
@@ -301,18 +308,16 @@ impl WorkflowProfile {
                 soft_proof_profile: Some(PathBuf::from("/usr/share/color/icc/Fogra39.icc")),
                 default_intent: "Perceptual".to_string(),
             },
-            keyboard_shortcuts: vec![
-                KeyboardShortcut {
-                    action: "Launch Krita".to_string(),
-                    keys: "Super+Shift+K".to_string(),
-                    description: "Open drawing app".to_string(),
-                },
-            ],
+            keyboard_shortcuts: vec![KeyboardShortcut {
+                action: "Launch Krita".to_string(),
+                keys: "Super+Shift+K".to_string(),
+                description: "Open drawing app".to_string(),
+            }],
             startup_apps: vec![],
             environment: HashMap::new(),
         }
     }
-    
+
     pub fn audio_producer() -> Self {
         Self {
             workflow_type: WorkflowType::AudioProducer,
@@ -367,21 +372,21 @@ impl WorkflowProfile {
                 soft_proof_profile: None,
                 default_intent: "Perceptual".to_string(),
             },
-            keyboard_shortcuts: vec![
-                KeyboardShortcut {
-                    action: "Launch Ardour".to_string(),
-                    keys: "Super+Shift+A".to_string(),
-                    description: "Open DAW".to_string(),
-                },
-            ],
+            keyboard_shortcuts: vec![KeyboardShortcut {
+                action: "Launch Ardour".to_string(),
+                keys: "Super+Shift+A".to_string(),
+                description: "Open DAW".to_string(),
+            }],
             startup_apps: vec!["qpwgraph".to_string()],
             environment: [
                 ("PIPEWIRE_LATENCY".to_string(), "64/48000".to_string()),
                 ("PIPEWIRE_QUANTUM".to_string(), "64/48000".to_string()),
-            ].into_iter().collect(),
+            ]
+            .into_iter()
+            .collect(),
         }
     }
-    
+
     pub fn photographer() -> Self {
         Self {
             workflow_type: WorkflowType::Photographer,
@@ -431,18 +436,16 @@ impl WorkflowProfile {
                 soft_proof_profile: Some(PathBuf::from("/usr/share/color/icc/sRGB.icc")),
                 default_intent: "Perceptual".to_string(),
             },
-            keyboard_shortcuts: vec![
-                KeyboardShortcut {
-                    action: "Launch Darktable".to_string(),
-                    keys: "Super+Shift+D".to_string(),
-                    description: "Open photo editor".to_string(),
-                },
-            ],
+            keyboard_shortcuts: vec![KeyboardShortcut {
+                action: "Launch Darktable".to_string(),
+                keys: "Super+Shift+D".to_string(),
+                description: "Open photo editor".to_string(),
+            }],
             startup_apps: vec![],
             environment: HashMap::new(),
         }
     }
-    
+
     pub fn get_profile(workflow_type: WorkflowType) -> Self {
         match workflow_type {
             WorkflowType::VideoEditor => Self::video_editor(),
@@ -453,7 +456,7 @@ impl WorkflowProfile {
             WorkflowType::Developer | WorkflowType::General => Self::general(),
         }
     }
-    
+
     fn general() -> Self {
         Self {
             workflow_type: WorkflowType::General,

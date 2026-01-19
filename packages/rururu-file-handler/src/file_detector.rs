@@ -43,7 +43,11 @@ impl FileDetector {
         self.detect_from_bytes(&data, path.extension().and_then(|e| e.to_str()))
     }
 
-    pub fn detect_from_bytes(&self, data: &[u8], extension: Option<&str>) -> Result<FileInfo, DetectorError> {
+    pub fn detect_from_bytes(
+        &self,
+        data: &[u8],
+        extension: Option<&str>,
+    ) -> Result<FileInfo, DetectorError> {
         // Try magic byte detection first
         if let Some(kind) = infer::get(data) {
             let category = self.categorize_mime(kind.mime_type());
@@ -141,16 +145,38 @@ impl FileDetector {
             // 3D
             "gltf" | "glb" => ("model/gltf+json", FileCategory::Model3D, Some("glTF")),
             "obj" => ("model/obj", FileCategory::Model3D, None),
-            "fbx" => ("application/octet-stream", FileCategory::Model3D, Some("FBX")),
-            "blend" => ("application/x-blender", FileCategory::Model3D, Some("Blender")),
+            "fbx" => (
+                "application/octet-stream",
+                FileCategory::Model3D,
+                Some("FBX"),
+            ),
+            "blend" => (
+                "application/x-blender",
+                FileCategory::Model3D,
+                Some("Blender"),
+            ),
             "stl" => ("model/stl", FileCategory::Model3D, None),
-            "usd" | "usda" | "usdc" | "usdz" => ("model/vnd.usd+zip", FileCategory::Model3D, Some("USD")),
+            "usd" | "usda" | "usdc" | "usdz" => {
+                ("model/vnd.usd+zip", FileCategory::Model3D, Some("USD"))
+            }
 
             // Documents
             "pdf" => ("application/pdf", FileCategory::Document, None),
-            "docx" => ("application/vnd.openxmlformats-officedocument.wordprocessingml.document", FileCategory::Document, None),
-            "xlsx" => ("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", FileCategory::Document, None),
-            "odt" => ("application/vnd.oasis.opendocument.text", FileCategory::Document, None),
+            "docx" => (
+                "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                FileCategory::Document,
+                None,
+            ),
+            "xlsx" => (
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                FileCategory::Document,
+                None,
+            ),
+            "odt" => (
+                "application/vnd.oasis.opendocument.text",
+                FileCategory::Document,
+                None,
+            ),
             "md" => ("text/markdown", FileCategory::Document, None),
             "txt" => ("text/plain", FileCategory::Document, None),
 
@@ -188,16 +214,16 @@ mod tests {
     #[test]
     fn test_extension_detection() {
         let detector = FileDetector::new();
-        
+
         let info = detector.detect_by_extension("mp4").unwrap();
         assert_eq!(info.category, FileCategory::Video);
-        
+
         let info = detector.detect_by_extension("flac").unwrap();
         assert_eq!(info.category, FileCategory::Audio);
-        
+
         let info = detector.detect_by_extension("exr").unwrap();
         assert_eq!(info.category, FileCategory::Image);
-        
+
         let info = detector.detect_by_extension("gltf").unwrap();
         assert_eq!(info.category, FileCategory::Model3D);
     }

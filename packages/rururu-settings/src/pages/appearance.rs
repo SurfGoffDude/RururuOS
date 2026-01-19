@@ -78,7 +78,7 @@ impl AppearancePage {
             .map(|(name, color)| {
                 let is_selected = self.accent_color == *color;
                 let color_clone = *color;
-                
+
                 button(
                     container(Space::new(Length::Fixed(24.0), Length::Fixed(24.0)))
                         .style(iced::theme::Container::Box),
@@ -94,13 +94,15 @@ impl AppearancePage {
             row![
                 text("Color scheme"),
                 Space::with_width(Length::Fill),
-                pick_list(themes.clone(), Some(self.theme.clone()), Message::ThemeChanged),
+                pick_list(
+                    themes.clone(),
+                    Some(self.theme.clone()),
+                    Message::ThemeChanged
+                ),
             ]
             .align_items(iced::Alignment::Center)
             .padding(8),
-
             Space::with_height(Length::Fixed(8.0)),
-
             // Accent color
             row![
                 text("Accent color"),
@@ -109,9 +111,7 @@ impl AppearancePage {
             ]
             .align_items(iced::Alignment::Center)
             .padding(8),
-
             Space::with_height(Length::Fixed(16.0)),
-
             // Font section
             Self::section("Fonts"),
             row![
@@ -121,15 +121,17 @@ impl AppearancePage {
             ]
             .align_items(iced::Alignment::Center)
             .padding(8),
-
             Space::with_height(Length::Fixed(16.0)),
-
             // Icons section
             Self::section("Icons"),
             row![
                 text("Icon theme"),
                 Space::with_width(Length::Fill),
-                pick_list(icon_themes, Some(self.icon_theme.clone()), Message::IconThemeChanged),
+                pick_list(
+                    icon_themes,
+                    Some(self.icon_theme.clone()),
+                    Message::IconThemeChanged
+                ),
             ]
             .align_items(iced::Alignment::Center)
             .padding(8),
@@ -139,8 +141,6 @@ impl AppearancePage {
     }
 
     fn section(title: &str) -> Element<'static, Message> {
-        text(title)
-            .size(16)
-            .into()
+        text(title).size(16).into()
     }
 }

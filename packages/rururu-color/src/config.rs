@@ -87,7 +87,7 @@ impl Default for ColorConfig {
 
 fn default_workflows() -> HashMap<String, WorkflowColorConfig> {
     let mut workflows = HashMap::new();
-    
+
     workflows.insert(
         "photography".to_string(),
         WorkflowColorConfig {
@@ -98,7 +98,7 @@ fn default_workflows() -> HashMap<String, WorkflowColorConfig> {
             soft_proof_profile: None,
         },
     );
-    
+
     workflows.insert(
         "video".to_string(),
         WorkflowColorConfig {
@@ -109,7 +109,7 @@ fn default_workflows() -> HashMap<String, WorkflowColorConfig> {
             soft_proof_profile: None,
         },
     );
-    
+
     workflows.insert(
         "vfx".to_string(),
         WorkflowColorConfig {
@@ -120,7 +120,7 @@ fn default_workflows() -> HashMap<String, WorkflowColorConfig> {
             soft_proof_profile: None,
         },
     );
-    
+
     workflows.insert(
         "print".to_string(),
         WorkflowColorConfig {
@@ -131,7 +131,7 @@ fn default_workflows() -> HashMap<String, WorkflowColorConfig> {
             soft_proof_profile: Some(PathBuf::from("/usr/share/color/icc/Fogra39.icc")),
         },
     );
-    
+
     workflows.insert(
         "web".to_string(),
         WorkflowColorConfig {
@@ -142,14 +142,14 @@ fn default_workflows() -> HashMap<String, WorkflowColorConfig> {
             soft_proof_profile: None,
         },
     );
-    
+
     workflows
 }
 
 impl ColorConfig {
     pub fn load() -> crate::Result<Self> {
         let config_path = Self::config_path();
-        
+
         if config_path.exists() {
             let content = std::fs::read_to_string(&config_path)?;
             toml::from_str(&content).map_err(|e| crate::ColorError::Config(e.to_string()))
@@ -157,21 +157,21 @@ impl ColorConfig {
             Ok(Self::default())
         }
     }
-    
+
     pub fn save(&self) -> crate::Result<()> {
         let config_path = Self::config_path();
-        
+
         if let Some(parent) = config_path.parent() {
             std::fs::create_dir_all(parent)?;
         }
-        
-        let content = toml::to_string_pretty(self)
-            .map_err(|e| crate::ColorError::Config(e.to_string()))?;
-        
+
+        let content =
+            toml::to_string_pretty(self).map_err(|e| crate::ColorError::Config(e.to_string()))?;
+
         std::fs::write(config_path, content)?;
         Ok(())
     }
-    
+
     fn config_path() -> PathBuf {
         dirs::config_dir()
             .unwrap_or_else(|| PathBuf::from("."))

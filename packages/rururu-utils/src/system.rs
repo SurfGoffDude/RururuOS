@@ -145,7 +145,7 @@ impl SystemInfo {
     pub fn disk_info(&self) -> Vec<DiskInfo> {
         use sysinfo::Disks;
         let disks = Disks::new_with_refreshed_list();
-        
+
         disks
             .iter()
             .map(|d| DiskInfo {

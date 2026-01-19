@@ -66,7 +66,7 @@ impl OcioManager {
             config: None,
         }
     }
-    
+
     pub fn load_config(&mut self, path: &Path) -> Result<()> {
         if !path.exists() {
             return Err(ColorError::OcioError(format!(
@@ -74,37 +74,37 @@ impl OcioManager {
                 path.display()
             )));
         }
-        
+
         // Parse OCIO config file
         let content = std::fs::read_to_string(path)?;
         let config = Self::parse_config(&content, path)?;
-        
+
         self.config_path = Some(path.to_path_buf());
         self.config = Some(config);
-        
+
         // Set environment variable for applications
         std::env::set_var("OCIO", path);
-        
+
         Ok(())
     }
-    
+
     fn parse_config(content: &str, path: &Path) -> Result<OcioConfig> {
         // Simplified OCIO config parsing
         // Real implementation would use ocio-rs or similar
-        
+
         let mut color_spaces = Vec::new();
         let mut displays = Vec::new();
         let mut views = Vec::new();
         let mut looks = Vec::new();
         let mut roles = OcioRoles::default();
         let mut description = String::new();
-        
+
         let mut current_section = "";
         let mut current_colorspace: Option<OcioColorSpace> = None;
-        
+
         for line in content.lines() {
             let line = line.trim();
-            
+
             if line.starts_with("description:") {
                 description = line.trim_start_matches("description:").trim().to_string();
             } else if line.starts_with("colorspaces:") {
@@ -139,17 +139,19 @@ impl OcioManager {
                 if line.starts_with("default:") {
                     roles.default = Some(line.trim_start_matches("default:").trim().to_string());
                 } else if line.starts_with("reference:") {
-                    roles.reference = Some(line.trim_start_matches("reference:").trim().to_string());
+                    roles.reference =
+                        Some(line.trim_start_matches("reference:").trim().to_string());
                 } else if line.starts_with("scene_linear:") {
-                    roles.scene_linear = Some(line.trim_start_matches("scene_linear:").trim().to_string());
+                    roles.scene_linear =
+                        Some(line.trim_start_matches("scene_linear:").trim().to_string());
                 }
             }
         }
-        
+
         if let Some(cs) = current_colorspace {
             color_spaces.push(cs);
         }
-        
+
         Ok(OcioConfig {
             path: path.to_path_buf(),
             description,
@@ -160,31 +162,31 @@ impl OcioManager {
             roles,
         })
     }
-    
+
     pub fn get_config(&self) -> Option<&OcioConfig> {
         self.config.as_ref()
     }
-    
+
     pub fn list_color_spaces(&self) -> Vec<&str> {
         self.config
             .as_ref()
             .map(|c| c.color_spaces.iter().map(|cs| cs.name.as_str()).collect())
             .unwrap_or_default()
     }
-    
+
     pub fn list_displays(&self) -> Vec<&str> {
         self.config
             .as_ref()
             .map(|c| c.displays.iter().map(|d| d.name.as_str()).collect())
             .unwrap_or_default()
     }
-    
+
     pub fn get_scene_linear(&self) -> Option<&str> {
         self.config
             .as_ref()
             .and_then(|c| c.roles.scene_linear.as_deref())
     }
-    
+
     pub fn unload_config(&mut self) {
         self.config = None;
         self.config_path = None;
@@ -200,13 +202,9 @@ impl Default for OcioManager {
 
 pub fn find_ocio_configs() -> Vec<PathBuf> {
     let mut configs = Vec::new();
-    
-    let search_paths = [
-        "/usr/share/ocio",
-        "/usr/local/share/ocio",
-        "/opt/ocio",
-    ];
-    
+
+    let search_paths = ["/usr/share/ocio", "/usr/local/share/ocio", "/opt/ocio"];
+
     for base in search_paths {
         let base_path = Path::new(base);
         if base_path.exists() {
@@ -220,7 +218,7 @@ pub fn find_ocio_configs() -> Vec<PathBuf> {
             }
         }
     }
-    
+
     // Check user directory
     if let Some(data_dir) = dirs::data_dir() {
         let user_ocio = data_dir.join("ocio");
@@ -235,7 +233,7 @@ pub fn find_ocio_configs() -> Vec<PathBuf> {
             }
         }
     }
-    
+
     configs
 }
 
@@ -251,7 +249,8 @@ pub fn builtin_presets() -> Vec<OcioPreset> {
     vec![
         OcioPreset {
             name: "ACES 1.2".to_string(),
-            description: "Academy Color Encoding System - Industry standard for VFX/Film".to_string(),
+            description: "Academy Color Encoding System - Industry standard for VFX/Film"
+                .to_string(),
             config_path: PathBuf::from("/usr/share/ocio/aces_1.2/config.ocio"),
             workflow: "vfx".to_string(),
         },

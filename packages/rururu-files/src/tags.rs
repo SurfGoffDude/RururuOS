@@ -156,11 +156,7 @@ impl TagDatabase {
     pub fn get_file_tags(&self, path: &Path) -> Vec<&TagInfo> {
         self.file_tags
             .get(path)
-            .map(|tags| {
-                tags.iter()
-                    .filter_map(|t| self.tags.get(t))
-                    .collect()
-            })
+            .map(|tags| tags.iter().filter_map(|t| self.tags.get(t)).collect())
             .unwrap_or_default()
     }
 
@@ -240,7 +236,7 @@ impl TagPanel {
             .map(|color| {
                 let rgb = color.to_rgb();
                 let is_selected = *color == self.selected_color;
-                
+
                 button(
                     container(Space::new(Length::Fixed(20.0), Length::Fixed(20.0)))
                         .style(iced::theme::Container::Box),
@@ -410,9 +406,7 @@ impl FileMetadata {
 }
 
 pub fn view_metadata<'a>(metadata: &'a FileMetadata) -> Element<'a, Message> {
-    let mut items = vec![
-        ("Size", metadata.format_size()),
-    ];
+    let mut items = vec![("Size", metadata.format_size())];
 
     if let Some(created) = metadata.created {
         items.push(("Created", FileMetadata::format_date(created)));

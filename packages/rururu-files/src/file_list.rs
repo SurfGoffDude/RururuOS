@@ -45,12 +45,13 @@ impl FileList {
         let rows: Vec<Element<Message>> = files
             .iter()
             .map(|entry| {
-                let is_selected = selected
-                    .as_ref()
-                    .map(|s| s == &entry.path)
-                    .unwrap_or(false);
+                let is_selected = selected.as_ref().map(|s| s == &entry.path).unwrap_or(false);
 
-                let icon = if entry.is_dir { "📁" } else { Self::file_icon(&entry.file_type) };
+                let icon = if entry.is_dir {
+                    "📁"
+                } else {
+                    Self::file_icon(&entry.file_type)
+                };
 
                 let size_str = if entry.is_dir {
                     "—".to_string()
@@ -61,13 +62,11 @@ impl FileList {
                 let modified_str = entry
                     .modified
                     .and_then(|t| {
-                        t.duration_since(SystemTime::UNIX_EPOCH)
-                            .ok()
-                            .map(|d| {
-                                chrono::DateTime::from_timestamp(d.as_secs() as i64, 0)
-                                    .map(|dt| dt.format("%Y-%m-%d %H:%M").to_string())
-                                    .unwrap_or_default()
-                            })
+                        t.duration_since(SystemTime::UNIX_EPOCH).ok().map(|d| {
+                            chrono::DateTime::from_timestamp(d.as_secs() as i64, 0)
+                                .map(|dt| dt.format("%Y-%m-%d %H:%M").to_string())
+                                .unwrap_or_default()
+                        })
                     })
                     .unwrap_or_else(|| "—".to_string());
 
@@ -114,12 +113,13 @@ impl FileList {
         let items: Vec<Element<Message>> = files
             .iter()
             .map(|entry| {
-                let is_selected = selected
-                    .as_ref()
-                    .map(|s| s == &entry.path)
-                    .unwrap_or(false);
+                let is_selected = selected.as_ref().map(|s| s == &entry.path).unwrap_or(false);
 
-                let icon = if entry.is_dir { "📁" } else { Self::file_icon(&entry.file_type) };
+                let icon = if entry.is_dir {
+                    "📁"
+                } else {
+                    Self::file_icon(&entry.file_type)
+                };
                 let path = entry.path.clone();
 
                 let name = if entry.name.len() > 12 {
@@ -128,14 +128,11 @@ impl FileList {
                     entry.name.clone()
                 };
 
-                let item = column![
-                    text(icon).size(32),
-                    text(name).size(12),
-                ]
-                .align_items(iced::Alignment::Center)
-                .spacing(4)
-                .width(Length::Fixed(100.0))
-                .height(Length::Fixed(80.0));
+                let item = column![text(icon).size(32), text(name).size(12),]
+                    .align_items(iced::Alignment::Center)
+                    .spacing(4)
+                    .width(Length::Fixed(100.0))
+                    .height(Length::Fixed(80.0));
 
                 let style = if is_selected {
                     iced::theme::Button::Primary
@@ -172,37 +169,37 @@ impl FileList {
             "psd" | "xcf" | "kra" => "🎨",
             "cr2" | "cr3" | "nef" | "arw" | "dng" | "raw" => "📷",
             "exr" | "hdr" => "✨",
-            
+
             // Video
             "mp4" | "mkv" | "avi" | "mov" | "webm" | "flv" => "🎬",
-            
+
             // Audio
             "mp3" | "flac" | "wav" | "ogg" | "m4a" | "aac" => "🎵",
-            
+
             // 3D
             "gltf" | "glb" | "obj" | "fbx" | "blend" | "stl" => "🧊",
-            
+
             // Documents
             "pdf" => "📄",
             "doc" | "docx" | "odt" => "📝",
             "xls" | "xlsx" | "ods" => "📊",
             "ppt" | "pptx" | "odp" => "📽️",
-            
+
             // Code
             "rs" | "py" | "js" | "ts" | "c" | "cpp" | "h" | "go" | "java" => "💻",
             "html" | "css" | "scss" => "🌐",
             "json" | "yaml" | "yml" | "toml" | "xml" => "⚙️",
             "sh" | "bash" | "zsh" | "fish" => "🐚",
-            
+
             // Archives
             "zip" | "tar" | "gz" | "bz2" | "xz" | "7z" | "rar" => "📦",
-            
+
             // Text
             "txt" | "md" | "rst" => "📃",
-            
+
             // Executables
             "exe" | "msi" | "deb" | "rpm" | "appimage" => "⚡",
-            
+
             _ => "📄",
         }
     }

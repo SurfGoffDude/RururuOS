@@ -61,12 +61,37 @@ pub struct UnitInfo {
 trait SystemdManager {
     fn start_unit(&self, name: &str, mode: &str) -> zbus::Result<zbus::zvariant::OwnedObjectPath>;
     fn stop_unit(&self, name: &str, mode: &str) -> zbus::Result<zbus::zvariant::OwnedObjectPath>;
-    fn restart_unit(&self, name: &str, mode: &str) -> zbus::Result<zbus::zvariant::OwnedObjectPath>;
+    fn restart_unit(&self, name: &str, mode: &str)
+        -> zbus::Result<zbus::zvariant::OwnedObjectPath>;
     fn reload_unit(&self, name: &str, mode: &str) -> zbus::Result<zbus::zvariant::OwnedObjectPath>;
-    fn enable_unit_files(&self, files: &[&str], runtime: bool, force: bool) -> zbus::Result<(bool, Vec<(String, String, String)>)>;
-    fn disable_unit_files(&self, files: &[&str], runtime: bool) -> zbus::Result<Vec<(String, String, String)>>;
+    fn enable_unit_files(
+        &self,
+        files: &[&str],
+        runtime: bool,
+        force: bool,
+    ) -> zbus::Result<(bool, Vec<(String, String, String)>)>;
+    fn disable_unit_files(
+        &self,
+        files: &[&str],
+        runtime: bool,
+    ) -> zbus::Result<Vec<(String, String, String)>>;
     fn get_unit(&self, name: &str) -> zbus::Result<zbus::zvariant::OwnedObjectPath>;
-    fn list_units(&self) -> zbus::Result<Vec<(String, String, String, String, String, String, zbus::zvariant::OwnedObjectPath, u32, String, zbus::zvariant::OwnedObjectPath)>>;
+    fn list_units(
+        &self,
+    ) -> zbus::Result<
+        Vec<(
+            String,
+            String,
+            String,
+            String,
+            String,
+            String,
+            zbus::zvariant::OwnedObjectPath,
+            u32,
+            String,
+            zbus::zvariant::OwnedObjectPath,
+        )>,
+    >;
     fn reload(&self) -> zbus::Result<()>;
 }
 
@@ -146,15 +171,17 @@ impl SystemdManager {
 
         Ok(units
             .into_iter()
-            .map(|(name, description, load_state, active_state, sub_state, _, _, _, _, _)| {
-                UnitInfo {
-                    name,
-                    description,
-                    load_state,
-                    active_state: UnitState::from(active_state.as_str()),
-                    sub_state,
-                }
-            })
+            .map(
+                |(name, description, load_state, active_state, sub_state, _, _, _, _, _)| {
+                    UnitInfo {
+                        name,
+                        description,
+                        load_state,
+                        active_state: UnitState::from(active_state.as_str()),
+                        sub_state,
+                    }
+                },
+            )
             .collect())
     }
 
@@ -235,12 +262,7 @@ mod tests {
         let mut opts = HashMap::new();
         opts.insert("User".to_string(), "rururu".to_string());
 
-        let unit = create_service_unit(
-            "rururu-test",
-            "Test Service",
-            "/usr/bin/test",
-            opts,
-        );
+        let unit = create_service_unit("rururu-test", "Test Service", "/usr/bin/test", opts);
 
         assert!(unit.contains("Description=Test Service"));
         assert!(unit.contains("ExecStart=/usr/bin/test"));

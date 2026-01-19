@@ -81,15 +81,12 @@ pub struct ProcessManager {
 
 impl ProcessManager {
     pub fn new() -> Self {
-        Self { managed: Vec::new() }
+        Self {
+            managed: Vec::new(),
+        }
     }
 
-    pub fn spawn(
-        &mut self,
-        name: &str,
-        program: &str,
-        args: &[&str],
-    ) -> Result<u32, ProcessError> {
+    pub fn spawn(&mut self, name: &str, program: &str, args: &[&str]) -> Result<u32, ProcessError> {
         info!("Spawning process: {} {}", program, args.join(" "));
 
         let child = Command::new(program)
@@ -142,7 +139,7 @@ impl ProcessManager {
 
     pub fn kill_by_name(&mut self, name: &str) -> Result<usize, ProcessError> {
         let mut killed = 0;
-        
+
         for proc in &mut self.managed {
             if proc.name == name && proc.is_running() {
                 match proc.kill() {
@@ -181,13 +178,12 @@ impl ProcessManager {
     }
 
     pub fn send_signal(pid: i32, sig: Signal) -> Result<(), ProcessError> {
-        signal::kill(Pid::from_raw(pid), sig)
-            .map_err(|e| ProcessError::SignalError(e.to_string()))
+        signal::kill(Pid::from_raw(pid), sig).map_err(|e| ProcessError::SignalError(e.to_string()))
     }
 
     pub fn set_priority(pid: i32, priority: ProcessPriority) -> Result<(), ProcessError> {
         let nice = priority.nice_value();
-        
+
         // Use renice via command for simplicity
         let output = Command::new("renice")
             .args([&nice.to_string(), "-p", &pid.to_string()])
@@ -216,7 +212,7 @@ impl ProcessManager {
 
     pub fn shutdown_all(&mut self) {
         info!("Shutting down all managed processes");
-        
+
         // First try graceful termination
         for proc in &self.managed {
             let _ = proc.terminate();

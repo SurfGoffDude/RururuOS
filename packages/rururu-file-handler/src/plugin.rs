@@ -1,7 +1,7 @@
+use libloading::{Library, Symbol};
 use std::collections::HashMap;
 use std::ffi::OsStr;
 use std::path::{Path, PathBuf};
-use libloading::{Library, Symbol};
 use thiserror::Error;
 use tracing::{debug, error, info, warn};
 
@@ -40,12 +40,8 @@ type PluginInitFn = unsafe extern "C" fn() -> i32;
 type PluginDeinitFn = unsafe extern "C" fn();
 type GetMetadataFn = unsafe extern "C" fn(*const std::ffi::c_char) -> *mut FileMetadata;
 type FreeMetadataFn = unsafe extern "C" fn(*mut FileMetadata);
-type GenerateThumbnailFn = unsafe extern "C" fn(
-    *const std::ffi::c_char,
-    *const std::ffi::c_char,
-    u32,
-    u32,
-) -> i32;
+type GenerateThumbnailFn =
+    unsafe extern "C" fn(*const std::ffi::c_char, *const std::ffi::c_char, u32, u32) -> i32;
 
 pub struct LoadedPlugin {
     _library: Library,
@@ -71,7 +67,9 @@ impl LoadedPlugin {
         unsafe {
             let metadata_ptr = get_fn(path_cstr.as_ptr());
             if metadata_ptr.is_null() {
-                return Err(PluginError::InvalidPlugin("Metadata extraction failed".into()));
+                return Err(PluginError::InvalidPlugin(
+                    "Metadata extraction failed".into(),
+                ));
             }
 
             let metadata = &*metadata_ptr;
@@ -101,9 +99,9 @@ impl LoadedPlugin {
         width: u32,
         height: u32,
     ) -> Result<(), PluginError> {
-        let gen_fn = self.generate_thumbnail.ok_or_else(|| {
-            PluginError::InvalidPlugin("No generate_thumbnail function".into())
-        })?;
+        let gen_fn = self
+            .generate_thumbnail
+            .ok_or_else(|| PluginError::InvalidPlugin("No generate_thumbnail function".into()))?;
 
         let source_cstr = std::ffi::CString::new(source.to_string_lossy().as_bytes())
             .map_err(|e| PluginError::InvalidPlugin(e.to_string()))?;
@@ -162,24 +160,23 @@ impl PluginManager {
 
     fn is_plugin_file(&self, path: &Path) -> bool {
         let ext = path.extension().and_then(OsStr::to_str);
-        
+
         #[cfg(target_os = "linux")]
         return ext == Some("so");
-        
+
         #[cfg(target_os = "macos")]
         return ext == Some("dylib");
-        
+
         #[cfg(target_os = "windows")]
         return ext == Some("dll");
-        
+
         #[cfg(not(any(target_os = "linux", target_os = "macos", target_os = "windows")))]
         return false;
     }
 
     pub fn load_plugin(&mut self, path: &Path) -> Result<(), PluginError> {
         unsafe {
-            let library = Library::new(path)
-                .map_err(|e| PluginError::LoadError(e.to_string()))?;
+            let library = Library::new(path).map_err(|e| PluginError::LoadError(e.to_string()))?;
 
             // Get plugin info
             let info_fn: Symbol<PluginInfoFn> = library
@@ -248,7 +245,11 @@ impl PluginManager {
                 generate_thumbnail,
             };
 
-            debug!("Registered plugin: {} with {} extensions", name, plugin.extensions.len());
+            debug!(
+                "Registered plugin: {} with {} extensions",
+                name,
+                plugin.extensions.len()
+            );
             self.plugins.insert(name, plugin);
         }
 
@@ -277,7 +278,9 @@ impl Drop for PluginManager {
     fn drop(&mut self) {
         for (name, plugin) in &self.plugins {
             unsafe {
-                if let Ok(deinit_fn) = plugin._library.get::<PluginDeinitFn>(b"rururu_plugin_deinit")
+                if let Ok(deinit_fn) = plugin
+                    ._library
+                    .get::<PluginDeinitFn>(b"rururu_plugin_deinit")
                 {
                     debug!("Deinitializing plugin: {}", name);
                     deinit_fn();

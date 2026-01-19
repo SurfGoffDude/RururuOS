@@ -1,8 +1,10 @@
 use crate::app::Message;
-use iced::widget::{button, checkbox, column, container, pick_list, progress_bar, row, text, text_input, Space};
+use iced::widget::{
+    button, checkbox, column, container, pick_list, progress_bar, row, text, text_input, Space,
+};
 use iced::{Element, Length};
-use std::path::{Path, PathBuf};
 use std::collections::HashSet;
+use std::path::{Path, PathBuf};
 
 #[derive(Debug, Clone)]
 pub struct BatchOperation {
@@ -126,7 +128,7 @@ impl BatchOperation {
 
     async fn copy_file(&self, source: &Path) -> BatchResult {
         let target_dir = self.target_directory.as_ref();
-        
+
         match target_dir {
             Some(dir) => {
                 let dest = dir.join(source.file_name().unwrap_or_default());
@@ -153,7 +155,7 @@ impl BatchOperation {
 
     async fn move_file(&self, source: &Path) -> BatchResult {
         let target_dir = self.target_directory.as_ref();
-        
+
         match target_dir {
             Some(dir) => {
                 let dest = dir.join(source.file_name().unwrap_or_default());
@@ -228,7 +230,7 @@ impl BatchOperation {
     async fn compress_file(&self, path: &Path) -> BatchResult {
         // Create zip archive for single file
         let zip_path = path.with_extension("zip");
-        
+
         // This is a placeholder - real implementation would use zip crate
         BatchResult {
             path: path.to_path_buf(),
@@ -254,25 +256,19 @@ pub fn view_batch_toolbar<'a>(batch: &'a BatchOperation) -> Element<'a, Message>
     row![
         text(format!("{} selected", batch.selection_count())).size(13),
         Space::with_width(Length::Fixed(16.0)),
-        
         button(text("Copy"))
             .style(iced::theme::Button::Secondary)
             .on_press(Message::BatchSetOperation(BatchOperationType::Copy)),
-        
         button(text("Move"))
             .style(iced::theme::Button::Secondary)
             .on_press(Message::BatchSetOperation(BatchOperationType::Move)),
-        
         button(text("Delete"))
             .style(iced::theme::Button::Destructive)
             .on_press(Message::BatchSetOperation(BatchOperationType::Delete)),
-        
         button(text("Rename"))
             .style(iced::theme::Button::Secondary)
             .on_press(Message::BatchSetOperation(BatchOperationType::Rename)),
-        
         Space::with_width(Length::Fill),
-        
         button(text("Deselect All"))
             .style(iced::theme::Button::Text)
             .on_press(Message::BatchDeselectAll),
@@ -292,42 +288,34 @@ pub fn view_batch_dialog<'a>(batch: &'a BatchOperation) -> Element<'a, Message> 
     let title = format!("{} {} files", op, batch.selection_count());
 
     let options: Element<Message> = match op {
-        BatchOperationType::Rename => {
-            column![
-                text("Rename pattern:").size(12),
-                text_input("{name}_{n}", &batch.rename_pattern)
-                    .on_input(Message::BatchRenamePatternChanged),
-                text("Variables: {name}, {n}, {ext}").size(11),
+        BatchOperationType::Rename => column![
+            text("Rename pattern:").size(12),
+            text_input("{name}_{n}", &batch.rename_pattern)
+                .on_input(Message::BatchRenamePatternChanged),
+            text("Variables: {name}, {n}, {ext}").size(11),
+        ]
+        .spacing(4)
+        .into(),
+        BatchOperationType::Copy | BatchOperationType::Move => column![
+            text("Target directory:").size(12),
+            row![
+                text(
+                    batch
+                        .target_directory
+                        .as_ref()
+                        .map(|p| p.display().to_string())
+                        .unwrap_or_else(|| "Not selected".to_string())
+                )
+                .size(12),
+                button(text("Browse"))
+                    .style(iced::theme::Button::Secondary)
+                    .on_press(Message::BatchSelectTargetDir),
             ]
-            .spacing(4)
-            .into()
-        }
-        BatchOperationType::Copy | BatchOperationType::Move => {
-            column![
-                text("Target directory:").size(12),
-                row![
-                    text(
-                        batch
-                            .target_directory
-                            .as_ref()
-                            .map(|p| p.display().to_string())
-                            .unwrap_or_else(|| "Not selected".to_string())
-                    )
-                    .size(12),
-                    button(text("Browse"))
-                        .style(iced::theme::Button::Secondary)
-                        .on_press(Message::BatchSelectTargetDir),
-                ]
-                .spacing(8),
-            ]
-            .spacing(4)
-            .into()
-        }
-        BatchOperationType::Delete => {
-            text("Files will be moved to trash.")
-                .size(12)
-                .into()
-        }
+            .spacing(8),
+        ]
+        .spacing(4)
+        .into(),
+        BatchOperationType::Delete => text("Files will be moved to trash.").size(12).into(),
         _ => Space::new(Length::Shrink, Length::Shrink).into(),
     };
 
@@ -342,9 +330,11 @@ pub fn view_batch_dialog<'a>(batch: &'a BatchOperation) -> Element<'a, Message> 
         let success_count = batch.results.iter().filter(|r| r.success).count();
         let fail_count = batch.results.len() - success_count;
 
-        column![
-            text(format!("Completed: {} success, {} failed", success_count, fail_count)).size(12),
-        ]
+        column![text(format!(
+            "Completed: {} success, {} failed",
+            success_count, fail_count
+        ))
+        .size(12),]
         .into()
     } else {
         Space::new(Length::Shrink, Length::Shrink).into()

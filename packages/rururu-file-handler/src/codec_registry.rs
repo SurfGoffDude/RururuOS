@@ -54,16 +54,16 @@ impl CodecRegistry {
     fn register_default_codecs(&mut self) {
         // Video decoders (FFmpeg)
         self.register_ffmpeg_video_decoders();
-        
+
         // Video encoders (FFmpeg)
         self.register_ffmpeg_video_encoders();
-        
+
         // Audio decoders (FFmpeg)
         self.register_ffmpeg_audio_decoders();
-        
+
         // Audio encoders (FFmpeg)
         self.register_ffmpeg_audio_encoders();
-        
+
         // Image codecs
         self.register_image_codecs();
     }
@@ -223,7 +223,7 @@ mod tests {
     #[test]
     fn test_codec_lookup() {
         let registry = CodecRegistry::new();
-        
+
         assert!(registry.is_supported("dec_h264"));
         assert!(registry.is_supported("dec_hevc"));
         assert!(registry.is_supported("enc_libx264"));
@@ -233,10 +233,10 @@ mod tests {
     #[test]
     fn test_category_filter() {
         let registry = CodecRegistry::new();
-        
+
         let video_decoders = registry.list_by_category(CodecCategory::VideoDecoder);
         assert!(!video_decoders.is_empty());
-        
+
         let audio_encoders = registry.list_by_category(CodecCategory::AudioEncoder);
         assert!(!audio_encoders.is_empty());
     }
